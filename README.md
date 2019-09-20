@@ -1,5 +1,5 @@
-# Portfolio Tutorial
-> This is just a simple Django tutorial I ran through to re-familiarize myself with Django.
+# Django Helpdesk
+> This is just a simple Django helpdesk web application that I am building to solve a problem at my workplace and to better test and expand my abilities
 
 
 ## Installation
