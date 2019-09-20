@@ -1,45 +1,12 @@
 {% extends 'base.html' %}
-{% load static %}
 {% block page_content %}
-    <div class="row">
-        <div class="container">
-            <div class="card-body">
-                <h1 class="card-title">All Tickets</h1>
-                <table style="width: 100%">
-                    <tr>
-                        <th>Date Opened</th>
-                        <th>Customer Name</th>
-                        <th>Subject</th>
-                        <th>Status</th>
-                        <th>Assigned To</th>
-                        <th>Ticket ID</th>
-                    </tr>
-                    {% for ticket in tickets %}
-                        <tr>
-                            <td>{{ ticket.t_opened }}</td>
-                            <td>{{ ticket.c_info.c_name }}</td>
-                            <td>{{ ticket.t_subject }}</td>
-                            <td>{{ ticket.t_status }}</td>
-                            <td>{{ ticket.tech_info.te_id }}</td>
-                            <td>{{ ticket.pk }}</td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
-    </div>
-{% endblock page_content %}
-
-{% comment %}
-<div class="col-md-4">
-    <div class="card mb-2">
-        <div class="card-body">
-            <h5 class="card-title">{{ ticket.t_subject }}</h5>
-            <small>
-                <p>{{ ticket.t_opened }} | {{ ticket.t_status }} | {{ ticket.t_category }} | {{ ticket.tech_info.te_id }}
-            </small>
-            <p class="card-body">{{ ticket.t_body }}
-        </div>
-    </div>
-</div>
-{% endcomment %}
+    {% load render_table from django_tables2 %}
+    <html>
+        <head>
+            <title>All Tickets</title>
+        </head>
+        <body>
+            {% render_table table %}
+        </body>
+    </html>
+{% endblock %}
