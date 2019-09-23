@@ -1,0 +1,8 @@
+version: "3.2"
+services:
+  app:
+    build: .
+    networks:
+      - main  # Add the container to the network "main"
+networks:
+  main:

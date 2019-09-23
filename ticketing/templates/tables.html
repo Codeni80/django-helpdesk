@@ -1,9 +1,10 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 {% load django_tables2 %}
     {% load i18n %}
     {% block table-wrapper %}
     <div class="container">
         {% block table %}
-            <table class="table table-striped table-bordered">
+            <table id="example" class="table table-striped table-bordered">
                 {% block table.thead %}
                 {% if table.show_header %}
                     <thead class="thead-dark">
@@ -34,7 +35,7 @@
                     {% empty %}
                         {% if table.empty_text %}
                         {% block table.tbody.empty_text %}
-                        <tr><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</td></tr>
+                        <tr><a href="apples"><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</a></td></tr>
                         {% endblock table.tbody.empty_text %}
                         {% endif %}
                     {% endfor %}
@@ -95,3 +96,21 @@
         {% endblock pagination %}
     </div>
     {% endblock table-wrapper %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<script>
+$(document).ready(function() {
+
+    $('#example tr').click(function() {
+        var href = $(this).find("a").attr("href");
+        if(href) {
+            window.location = href;
+        }
+    });
+
+});
+</script>
+

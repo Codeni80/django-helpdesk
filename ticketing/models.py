@@ -1,5 +1,6 @@
 from django.db import models
 import django_tables2 as tables
+from django_tables2.utils import A
 
 class Ticket(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Timestamp')
@@ -46,7 +47,9 @@ class Status(models.Model):
         return self.name
 
 class TicketTable(tables.Table):
-    pk = tables.Column(verbose_name='Ticket ID')
+    pk = tables.LinkColumn("ticket_detail", args=[A("pk")], verbose_name="Ticket ID", attrs={
+        "a": {"style":"color:black"}
+    })
     class Meta:
         model = Ticket
         fields = ('t_opened', 'c_info.c_name', 't_subject', 't_status.name', 'tech_info.te_id', 't_closed', 'pk')

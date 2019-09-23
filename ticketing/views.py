@@ -8,6 +8,7 @@ def ticketing_index(request):
     num = request.session.get('sort')
     if not num:
         num = '-pk'
+        request.session['sort'] = num
     try:
         request.session['sort'] = request.GET['sort']
         num = request.session['sort']
@@ -22,3 +23,10 @@ def ticketing_index(request):
     RequestConfig(request, paginate={"per_page": 20}).configure(table)
 
     return render(request, 'ticketing_index.html', {'table': table})
+
+def ticket_detail(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    context = {
+        "ticket": ticket
+    }
+    return render(request, "ticket_detail.html", context)
