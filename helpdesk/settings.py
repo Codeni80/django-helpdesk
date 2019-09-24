@@ -25,7 +25,7 @@ SECRET_KEY = '7*gee%7kzm2i*%5onei=c*jy7zq($h#9a#4g@hz@=pw+^=m2v*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '192.168.11.140', '192.168.11.140:8000', '127.0.0.1']
 
 
 # Application definition
@@ -122,3 +122,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+AUTH_USER_MODEL = 'ticketing.CustomUser'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
