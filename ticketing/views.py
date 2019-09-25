@@ -66,7 +66,15 @@ def new_ticket(request):
             ticket.save()
             return redirect('ticket_detail', pk=ticket.pk)
     else:
-        form = TicketForm()
+        t_choices = [(0, '---------')]
+        user = get_user_model()
+        user = user.objects.filter(u_permission_level=2)
+        i = 1
+
+        for u in user:
+            t_choices.append((i, u))
+            i += 1
+        form = TicketForm(t_choices=t_choices)
     
     context = {
         'form': form,

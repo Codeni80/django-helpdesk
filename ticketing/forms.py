@@ -18,17 +18,10 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ('u_name', 'username', 'u_phone', 'email', 'u_permission_level')
 
 class TicketForm(forms.ModelForm):
-    # choices = [(0, '---------')]
-
-    # user = get_user_model()
-    # user = user.objects.filter(u_permission_level=2)
-    # i = 1
-    
-    # for u in user:
-    #     choices.append((i, u))
-    #     i += 1
-
-    # t_assigned = forms.ChoiceField(choices=choices, required=True, label="Assigned To")
+    def __init__(self, *args, **kwargs):
+        self.t_choices = kwargs.pop('t_choices')
+        super(TicketForm,self).__init__(*args, **kwargs)
+        self.fields['t_assigned'] = forms.ChoiceField(choices=self.t_choices, required=True, label="Assigned To")
 
     class Meta:
         model = Ticket
