@@ -56,7 +56,7 @@ ROOT_URLCONF = 'helpdesk.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["helpdesk/templates/"],
+        'DIRS': [os.path.join(BASE_DIR, 'helpdesk/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
