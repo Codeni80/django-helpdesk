@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser, Ticket, Technician, Customer, Category, Status
+from .models import CustomUser, Ticket, Category, Status
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 import sys

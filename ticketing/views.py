@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from ticketing.models import Technician, Ticket, Customer, Category, Status, TicketTable
+from ticketing.models import Ticket, Category, Status, TicketTable
 from django.views.generic import ListView
 from django_tables2 import RequestConfig
 import sys
