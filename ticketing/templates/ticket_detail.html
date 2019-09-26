@@ -1,12 +1,9 @@
 {% extends "base.html" %}
 {% block page_content %}
-    <div class="col-md-8 offset-md-2">
-        <h1>{{ ticket.t_subject }}</h2>
-        <small>
-            {{ ticket.t_opened }} |&nbsp;
-            Categories:&nbsp;
-            {{ ticket.t_category }}
-        </small>
-        <p>{{ ticket.t_body | linebreaks }}</p>
-    </div>
+    <h2>Edit Ticket</h2>
+    <form method='POST'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
 {% endblock %}
