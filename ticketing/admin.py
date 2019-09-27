@@ -17,7 +17,7 @@ class CustomUserAdmin(admin.ModelAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ['username', 'password', 'email', 'u_name', 'u_phone', 'u_permission_level']
+    list_display = ['username', 'password', 'email', 'u_name', 'u_phone', 'u_permission_level', 'u_sort_type']
 
 admin.site.register(Ticket, TicketAdmin)
 admin.site.register(Category, CategoryAdmin)

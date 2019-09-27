@@ -15,20 +15,20 @@ from django.utils import timezone
 def ticketing_index(request):
     current_user = request.user
     user = get_user_model()
-    print("Current User Permisisons: {0}".format(current_user.u_permission_level), file=sys.stderr)
+
     if(current_user.u_permission_level == '2'):
-        num = request.session.get('sort')
-        if not num:
-            num = '-pk'
-            request.session['sort'] = num
+        if not current_user.u_sort_type:
+            current_user.u_sort_type = '-pk' #Setting default sort to sort newest to oldest tickets
         try:
-            request.session['sort'] = request.GET['sort']
-            num = request.session['sort']
+            #Try to set the sort type to what is requested by user
+            current_user.u_sort_type = request.GET['sort']
+            current_user.save()
+            print("WE SAVED THE SORT TYPE", file=sys.stderr)
         except:
             pass
 
-        print(request.session.get('sort'), file=sys.stderr)
-        sort_by = request.session.get('sort')
+        sort_by = current_user.u_sort_type
+        print("Sorting by: {0}".format(sort_by), file=sys.stderr)
 
         queryset = Ticket.objects.all().order_by(sort_by)
         table = TicketTable(queryset)

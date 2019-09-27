@@ -46,3 +46,4 @@ class CustomUser(AbstractUser):
     u_name = models.CharField(max_length=150, verbose_name='Customer Name')
     u_phone = models.CharField(max_length=14, verbose_name='Customer Phone Number')
     u_permission_level = models.CharField(max_length=11, choices=ROLE_CHOICES, verbose_name='Permission Level')
+    u_sort_type = models.CharField(max_length=30, verbose_name='Sort By Value', null=True, blank=True)
