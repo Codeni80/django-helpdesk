@@ -21,7 +21,9 @@ class TicketForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.t_choices = kwargs.pop('t_choices')
         super(TicketForm,self).__init__(*args, **kwargs)
-        self.fields['t_assigned'] = forms.ChoiceField(choices=self.t_choices, required=True, label="Assigned To")
+        # self.fields['t_assigned'] = forms.ChoiceField(choices=self.t_choices, required=True, label="Assigned To")
+        self.fields['t_assigned'].queryset = self.t_choices
+        self.fields['t_assigned'].initial = self.t_choices
 
     class Meta:
         model = Ticket

@@ -6,8 +6,8 @@ import sys
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser
-from .forms import CustomUserCreationForm, TicketForm, EditTicketForm
+from ticketing.models import CustomUser
+from ticketing.forms import CustomUserCreationForm, TicketForm, EditTicketForm
 from django.forms import ModelForm
 from django.utils import timezone
 
@@ -25,19 +25,19 @@ def ticketing_index(request):
             current_user.save()
             print("WE SAVED THE SORT TYPE", file=sys.stderr)
         except:
-            pass
+            print('WE HAD AN ERROR SAVING THE SORT TYPE', file=sys.stderr)
 
         sort_by = current_user.u_sort_type
         print("Sorting by: {0}".format(sort_by), file=sys.stderr)
 
-        queryset = Ticket.objects.all().order_by(sort_by)
+        queryset = Ticket.objects.all()
         table = TicketTable(queryset)
         RequestConfig(request, paginate={"per_page": 20}).configure(table)
 
         return render(request, 'ticketing_index.html', {'table': table})
     else:
         queryset = Ticket.objects.filter(c_info__username=current_user.username)
-        print("Queryset: {0}".format(queryset), file=sys.stderr)
+        # print("Queryset: {0}".format(queryset), file=sys.stderr)
         # test = user.objects.filter(username=current_user.username)
         # print("Current User: {0}".format(test), file=sys.stderr)
         table = TicketTable(queryset)
@@ -53,6 +53,10 @@ def ticket_detail(request, pk):
 
     ticket = Ticket.objects.get(pk=pk)
     updating_pk = ticket.pk
+    updating_cinfo = ticket.c_info
+    updating_tinfo = ticket.t_assigned
+    updating_ts = ticket.timestamp
+    updating_opened = ticket.t_opened
     status_choices = Status.objects.all()
     t_subject = ticket.t_subject
     t_body = ticket.t_body
@@ -75,13 +79,18 @@ def ticket_detail(request, pk):
             ticket = form.save(commit=False)
             ticket.pk = updating_pk
             ticket.status = status
-            ticket.c_info = request.user
-            ticket.timestamp = timezone.now()
-            ticket.t_opened = timezone.now()
+            ticket.c_info = updating_cinfo
+            ticket.t_assigned = updating_tinfo
+            ticket.timestamp = updating_ts
+            ticket.t_opened = updating_opened
+
+            if ticket.t_status.name == 'Closed':
+                ticket.t_closed = timezone.now()
+
             ticket.save()
             return redirect('ticketing_index')
     else:
-        print("WE HIT AN ERROR SAVING THE TICKET!!!!!", file=sys.stderr)
+        # print("WE HIT AN ERROR SAVING THE TICKET!!!!!", file=sys.stderr)
         form = EditTicketForm(t_status= t_status, status_choices=status_choices, t_subject=t_subject, t_body=t_body, t_category=t_category, category_choices=category_choices)
     
     context = {
@@ -91,42 +100,28 @@ def ticket_detail(request, pk):
     # return render(request, 'edit_ticket.html', context)
     return render(request, "ticket_detail.html", context)
 
-def register(request):
-    
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            # login(request, user)
-            return redirect('/')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
-
 @login_required
 def new_ticket(request):
     t_choices = [(0, '---------')]
     user = get_user_model()
     user = user.objects.filter(u_permission_level=2)
-    i = 1
-
-    for u in user:
-        t_choices.append((i, u))
-        i += 1
+    
     if request.method == "POST":
-        form = TicketForm(request.POST, t_choices=t_choices)
+        form = TicketForm(request.POST, t_choices=user)
         if form.is_valid():
             ticket = form.save(commit=False)
             # ticket.c_info = request.user
             ticket.timestamp = timezone.now()
             ticket.t_opened = timezone.now()
+
+            if ticket.t_status.name == 'Closed':
+                #We set the current time to ticket.t_closed
+                ticket.t_closed = timezone.now()
+            
             ticket.save()
             return redirect('ticket_detail', pk=ticket.pk)
     else:
-        form = TicketForm(t_choices=t_choices)
+        form = TicketForm(t_choices=user)
     
     context = {
         'form': form,
