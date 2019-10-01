@@ -5,20 +5,20 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('ticketing', '0002_auto_20190924_1038'),
-    ]
+    dependencies = [("ticketing", "0002_auto_20190924_1038")]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='u_password',
-            field=models.CharField(default='test', max_length=100, verbose_name='Password'),
+            model_name="customuser",
+            name="u_password",
+            field=models.CharField(
+                default="test", max_length=100, verbose_name="Password"
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='password',
-            field=models.CharField(max_length=128, verbose_name='password'),
+            model_name="customuser",
+            name="password",
+            field=models.CharField(max_length=128, verbose_name="password"),
         ),
     ]

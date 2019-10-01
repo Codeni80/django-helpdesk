@@ -5,21 +5,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('ticketing', '0004_auto_20190924_1041'),
-    ]
+    dependencies = [("ticketing", "0004_auto_20190924_1041")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='customuser',
-            name='u_email',
-        ),
-        migrations.RemoveField(
-            model_name='customuser',
-            name='u_id',
-        ),
-        migrations.RemoveField(
-            model_name='customuser',
-            name='u_password',
-        ),
+        migrations.RemoveField(model_name="customuser", name="u_email"),
+        migrations.RemoveField(model_name="customuser", name="u_id"),
+        migrations.RemoveField(model_name="customuser", name="u_password"),
     ]

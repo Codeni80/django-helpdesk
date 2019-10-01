@@ -7,24 +7,34 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('ticketing', '0007_ticket_t_assigned'),
-    ]
+    dependencies = [("ticketing", "0007_ticket_t_assigned")]
 
     operations = [
         migrations.AlterField(
-            model_name='ticket',
-            name='c_info',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Customer Name'),
+            model_name="ticket",
+            name="c_info",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Customer Name",
+            ),
         ),
         migrations.AlterField(
-            model_name='ticket',
-            name='t_category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ticketing.Category', verbose_name='Category'),
+            model_name="ticket",
+            name="t_category",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="ticketing.Category",
+                verbose_name="Category",
+            ),
         ),
         migrations.AlterField(
-            model_name='ticket',
-            name='t_status',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ticketing.Status', verbose_name='Status'),
+            model_name="ticket",
+            name="t_status",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="ticketing.Status",
+                verbose_name="Status",
+            ),
         ),
     ]

@@ -7,19 +7,27 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('ticketing', '0011_auto_20190927_1033'),
-    ]
+    dependencies = [("ticketing", "0011_auto_20190927_1033")]
 
     operations = [
         migrations.AlterField(
-            model_name='ticket',
-            name='c_info',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='customer', to=settings.AUTH_USER_MODEL, verbose_name='Customer Name'),
+            model_name="ticket",
+            name="c_info",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="customer",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Customer Name",
+            ),
         ),
         migrations.AlterField(
-            model_name='ticket',
-            name='t_assigned',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='technician', to=settings.AUTH_USER_MODEL, verbose_name='Assigned Technician'),
+            model_name="ticket",
+            name="t_assigned",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="technician",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Assigned Technician",
+            ),
         ),
     ]
