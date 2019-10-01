@@ -10,6 +10,7 @@ from ticketing.models import CustomUser
 from ticketing.forms import CustomUserCreationForm, TicketForm, EditTicketForm
 from django.forms import ModelForm
 from django.utils import timezone
+from django.db.models.functions import Lower
 
 @login_required
 def ticketing_index(request):
@@ -32,15 +33,13 @@ def ticketing_index(request):
 
     if(current_user.u_permission_level == '2'):
         queryset = Ticket.objects.all().order_by(sort_by)
+
         table = TicketTable(queryset)
         RequestConfig(request, paginate={"per_page": 20}).configure(table)
 
         return render(request, 'ticketing_index.html', {'table': table})
     else:
         queryset = Ticket.objects.filter(c_info__username=current_user.username).order_by(sort_by)
-        # print("Queryset: {0}".format(queryset), file=sys.stderr)
-        # test = user.objects.filter(username=current_user.username)
-        # print("Current User: {0}".format(test), file=sys.stderr)
         table = TicketTable(queryset)
         RequestConfig(request, paginate={"per_page": 20}).configure(table)
 
@@ -84,6 +83,7 @@ def ticket_detail(request, pk):
             ticket.t_assigned = updating_tinfo
             ticket.timestamp = updating_ts
             ticket.t_opened = updating_opened
+            ticket.t_subject = ticket.t_subject.capitalize()
 
             if ticket.t_status.name == 'Closed':
                 ticket.t_closed = timezone.now()
@@ -114,6 +114,7 @@ def new_ticket(request):
             # ticket.c_info = request.user
             ticket.timestamp = timezone.now()
             ticket.t_opened = timezone.now()
+            ticket.t_subject = ticket.t_subject.capitalize()
 
             if ticket.t_status.name == 'Closed':
                 #We set the current time to ticket.t_closed
