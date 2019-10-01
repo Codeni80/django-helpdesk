@@ -16,27 +16,28 @@ def ticketing_index(request):
     current_user = request.user
     user = get_user_model()
 
+    # Checking for sort type, setting it if we can
+    if not current_user.u_sort_type:
+        current_user.u_sort_type = '-pk' #Setting default sort to sort newest to oldest tickets
+    try:
+        #Try to set the sort type to what is requested by user
+        current_user.u_sort_type = request.GET['sort']
+        current_user.save()
+        print("WE SAVED THE SORT TYPE", file=sys.stderr)
+    except:
+        print('WE HAD AN ERROR SAVING THE SORT TYPE', file=sys.stderr)
+
+    sort_by = current_user.u_sort_type
+    print("Sorting by: {0}".format(sort_by), file=sys.stderr)
+
     if(current_user.u_permission_level == '2'):
-        if not current_user.u_sort_type:
-            current_user.u_sort_type = '-pk' #Setting default sort to sort newest to oldest tickets
-        try:
-            #Try to set the sort type to what is requested by user
-            current_user.u_sort_type = request.GET['sort']
-            current_user.save()
-            print("WE SAVED THE SORT TYPE", file=sys.stderr)
-        except:
-            print('WE HAD AN ERROR SAVING THE SORT TYPE', file=sys.stderr)
-
-        sort_by = current_user.u_sort_type
-        print("Sorting by: {0}".format(sort_by), file=sys.stderr)
-
-        queryset = Ticket.objects.all()
+        queryset = Ticket.objects.all().order_by(sort_by)
         table = TicketTable(queryset)
         RequestConfig(request, paginate={"per_page": 20}).configure(table)
 
         return render(request, 'ticketing_index.html', {'table': table})
     else:
-        queryset = Ticket.objects.filter(c_info__username=current_user.username)
+        queryset = Ticket.objects.filter(c_info__username=current_user.username).order_by(sort_by)
         # print("Queryset: {0}".format(queryset), file=sys.stderr)
         # test = user.objects.filter(username=current_user.username)
         # print("Current User: {0}".format(test), file=sys.stderr)
