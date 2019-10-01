@@ -4,17 +4,39 @@
 
 ## Installation
 
-Clone Repo:
+**Clone Repo:**
 ```
 git clone https://github.com/Codeni80/django-helpdesk.git
 ```
 
-Install Requirments:
+**Change Directory to the Cloned Repo:**
+```
+cd django-helpdesk
+```
+
+**Create Virtual Environment:**
+```
+virtualenv hdenv
+```
+
+**Activate Environment:**
+ - Windows: ```hdenv\Scripts\activate```
+ - Linux: ```source hdenv/bin/activate```
+
+**Install Requirments:**
 ```
 pip install -r requirements.txt
 ```
 
-Run Server:
+**Run Migrations:**
+```
+python manage.py makemigrations
+```
+```
+python manage.py migrate
+```
+
+**Run Server:**
 ```
 python manage.py runserver
 ```
@@ -23,6 +45,11 @@ python manage.py runserver
 
 * 0.0.1
     * WIP - Currently Blank Django Project
+* 0.0.5
+    * Basic Functionality
+    * User Creation/Login/Auth
+    * Basic Ticket Views
+    * Basic Ticket Editing/Management
 
 ## Meta
 
