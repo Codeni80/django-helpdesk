@@ -59,7 +59,7 @@ Cody Wilson – [@Codeni80](https://twitter.com/codeni80) – codeni80@gmail.com
 
 ## Contributing
 
-1. Fork it (<https://github.com/codeni80/Django-Test-Bed/fork>)
+1. Fork it (<https://github.com/codeni80/django-helpdesk/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
