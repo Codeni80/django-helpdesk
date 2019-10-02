@@ -10,6 +10,7 @@ from ticketing.models import CustomUser
 from ticketing.forms import CustomUserCreationForm, TicketForm, EditTicketForm
 from django.forms import ModelForm
 from django.utils import timezone
+from django.db.models.functions import Lower
 
 
 @login_required
@@ -19,9 +20,8 @@ def ticketing_index(request):
 
     # Checking for sort type, setting it if we can
     if not current_user.u_sort_type:
-        current_user.u_sort_type = (
-            "-pk"
-        )  # Setting default sort to sort newest to oldest tickets
+        current_user.u_sort_type = "-pk"
+        current_user.save()  # Setting default sort to sort newest to oldest tickets
     try:
         # Try to set the sort type to what is requested by user
         current_user.u_sort_type = request.GET["sort"]
@@ -36,7 +36,15 @@ def ticketing_index(request):
     # Checking to see if logged in user is a technician (u_permission_level 2),
     # or if they are a user (u_permission_level 1)
     if current_user.u_permission_level == "2":
-        queryset = Ticket.objects.all().order_by(sort_by)
+        if sort_by[0] == "-":
+            sort_by = sort_by[1:]
+            queryset = Ticket.objects.annotate(
+                t_subject_lower=Lower("t_subject")
+            ).order_by(Lower(sort_by).desc())
+        else:
+            queryset = Ticket.objects.annotate(
+                t_subject_lower=Lower("t_subject")
+            ).order_by(Lower(sort_by).asc())
 
         table = TicketTable(queryset)
         RequestConfig(request, paginate={"per_page": 20}).configure(table)
