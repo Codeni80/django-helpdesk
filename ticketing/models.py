@@ -55,6 +55,7 @@ class TicketTable(tables.Table):
         verbose_name="Ticket ID",
         attrs={"a": {"style": "color:black"}},
     )
+    t_subject = tables.Column(verbose_name="Subject", order_by="t_subject_lower")
 
     class Meta:
         model = Ticket
