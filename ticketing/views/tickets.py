@@ -10,7 +10,6 @@ from ticketing.models import CustomUser
 from ticketing.forms import CustomUserCreationForm, TicketForm, EditTicketForm
 from django.forms import ModelForm
 from django.utils import timezone
-from django.db.models.functions import Lower
 
 
 @login_required
@@ -34,6 +33,8 @@ def ticketing_index(request):
     sort_by = current_user.u_sort_type
     print("Sorting by: {0}".format(sort_by), file=sys.stderr)
 
+    # Checking to see if logged in user is a technician (u_permission_level 2),
+    # or if they are a user (u_permission_level 1)
     if current_user.u_permission_level == "2":
         queryset = Ticket.objects.all().order_by(sort_by)
 
@@ -42,6 +43,8 @@ def ticketing_index(request):
 
         return render(request, "ticketing_index.html", {"table": table})
     else:
+        # Since user isn't a technician, we only show them tickets they have
+        # made, or tickets that were made for them
         queryset = Ticket.objects.filter(
             c_info__username=current_user.username
         ).order_by(sort_by)
@@ -83,7 +86,6 @@ def ticket_detail(request, pk):
             category_choices=category_choices,
         )
         status = Status.objects.filter(name=form.t_status)
-        # print("Status from Form: {0}".format(form.t_status), file=sys.stderr)
         ticket.status = status
         print("Ticket.status: {0}".format(ticket.status), file=sys.stderr)
         if form.is_valid():
@@ -128,13 +130,13 @@ def new_ticket(request):
         form = TicketForm(request.POST, t_choices=user)
         if form.is_valid():
             ticket = form.save(commit=False)
-            # ticket.c_info = request.user
             ticket.timestamp = timezone.now()
             ticket.t_opened = timezone.now()
             ticket.t_subject = ticket.t_subject.capitalize()
 
             if ticket.t_status.name == "Closed":
                 # We set the current time to ticket.t_closed
+                # Only if t_status is set to closed
                 ticket.t_closed = timezone.now()
 
             ticket.save()
@@ -145,5 +147,3 @@ def new_ticket(request):
     context = {"form": form}
 
     return render(request, "new_ticket.html", context)
-    # form = TicketForm()
-    # return render(request, '/', {'form': form})
