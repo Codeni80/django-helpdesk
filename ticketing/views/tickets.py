@@ -104,7 +104,7 @@ def ticket_detail(request, pk):
             ticket.t_assigned = updating_tinfo
             ticket.timestamp = updating_ts
             ticket.t_opened = updating_opened
-            ticket.t_subject = ticket.t_subject.capitalize()
+            # ticket.t_subject = ticket.t_subject.capitalize()
 
             if ticket.t_status.name == "Closed":
                 ticket.t_closed = timezone.now()
