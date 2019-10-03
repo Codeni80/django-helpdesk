@@ -28,6 +28,8 @@ class Ticket(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Assigned Technician",
         related_name="technician",
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
