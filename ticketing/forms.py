@@ -21,10 +21,21 @@ class CustomUserChangeForm(UserChangeForm):
 class TicketForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.t_choices = kwargs.pop("t_choices")
+        self.perm_level = kwargs.pop("perm_level")
+        self.u_name = kwargs.pop("u_name")
+        self.c_choices = kwargs.pop("c_choices")
+        # self.t_assigned = kwargs.pop('t_assigned')
         super(TicketForm, self).__init__(*args, **kwargs)
         # self.fields['t_assigned'] = forms.ChoiceField(choices=self.t_choices, required=True, label="Assigned To")
         self.fields["t_assigned"].queryset = self.t_choices
-        self.fields["t_assigned"].initial = self.t_choices
+        self.fields["t_assigned"].initial = None
+        self.fields["c_info"].queryset = self.c_choices
+        
+        if int(self.perm_level) == 1:
+            self.fields["c_info"].initial = self.u_name
+            self.fields["c_info"].widget = forms.HiddenInput()
+            self.fields["t_assigned"].widget = forms.HiddenInput()
+            self.fields["t_assigned"].required = False
 
     class Meta:
         model = Ticket

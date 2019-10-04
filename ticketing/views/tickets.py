@@ -131,11 +131,19 @@ def ticket_detail(request, pk):
 @login_required
 def new_ticket(request):
     t_choices = [(0, "---------")]
-    user = get_user_model()
-    user = user.objects.filter(u_permission_level=2)
+    techs = get_user_model()
+    techs = techs.objects.filter(u_permission_level=2)
+    user_obj = request.user
+    perm_level = user_obj.u_permission_level
+    user = user_obj.u_name
+    c_choices = CustomUser.objects.all()
+    
 
     if request.method == "POST":
-        form = TicketForm(request.POST, t_choices=user)
+        form = TicketForm(request.POST, t_choices=techs, 
+            perm_level=perm_level,
+            u_name=user_obj,
+            c_choices=c_choices)
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.timestamp = timezone.now()
@@ -150,7 +158,10 @@ def new_ticket(request):
             ticket.save()
             return redirect("ticket_detail", pk=ticket.pk)
     else:
-        form = TicketForm(t_choices=user)
+        form = TicketForm(t_choices=techs, 
+            perm_level=perm_level,
+            u_name=user_obj,
+            c_choices=c_choices)
 
     context = {"form": form}
 
