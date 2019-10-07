@@ -37,6 +37,13 @@ class TicketForm(forms.ModelForm):
             self.fields["t_assigned"].widget = forms.HiddenInput()
             self.fields["t_assigned"].required = False
 
+        self.fields["t_status"].widget.attrs['style'] = 'width:400px;'
+        self.fields["t_subject"].widget.attrs['style'] = 'width:400px;'
+        self.fields["t_body"].widget.attrs['style'] = 'width:400px; height:150px'
+        self.fields["t_category"].widget.attrs['style'] = 'width:400px;'
+        self.fields["c_info"].widget.attrs['style'] = 'width:400px;'
+        self.fields["t_assigned"].widget.attrs['style'] = 'width:400px;'
+
     class Meta:
         model = Ticket
         fields = (
@@ -67,6 +74,11 @@ class EditTicketForm(forms.ModelForm):
         # self.fields['t_category'] = forms.ChoiceField(choices=self.category_choices, initial=self.t_category)
         self.fields["t_category"].queryset = self.category_choices
         self.fields["t_category"].initial = self.t_category
+
+        self.fields["t_status"].widget.attrs['style'] = 'width:400px;'
+        self.fields["t_subject"].widget.attrs['style'] = 'width:400px;'
+        self.fields["t_body"].widget.attrs['style'] = 'width:400px; height: 150px'
+        self.fields["t_category"].widget.attrs['style'] = 'width:400px;'
 
     class Meta:
         model = Ticket

@@ -3,7 +3,31 @@
     <h2>Edit Ticket</h2>
     <form method='POST'>
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
+        {{ form.non_field_errors }}
+
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+        {% endfor %}
+
+        <table>
+            {% for field in form.visible_fields %}
+                <tr>
+                    <th>{{ field.label_tag }}
+                    <td>
+                        {{ field.errors }}
+                        {{ field }}
+                        {{ field.help_text }}
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td>
+                    <button type="submit" style="float: right;">Save</button>
+                </td>
+            </tr>
+        </table>
+
     </form>
 {% endblock %}
