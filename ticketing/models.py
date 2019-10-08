@@ -65,8 +65,9 @@ class TicketTable(tables.Table):
             "t_opened",
             "c_info",
             "t_subject",
-            "t_status.name",
+            "t_status",
             "t_assigned",
+            "t_category",
             "t_closed",
             "pk",
         )
