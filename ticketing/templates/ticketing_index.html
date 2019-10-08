@@ -6,6 +6,13 @@
             <title>All Tickets</title>
         </head>
         <body>
+            {% for message in messages %}
+            <div class="container">
+                <div class="alert alert-success alert-dismissible text-center" role="alert">
+                    {{ message }}
+                </div>
+            </div>
+            {% endfor %}
             {% render_table table %}
         </body>
     </html>
