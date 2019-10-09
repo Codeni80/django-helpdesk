@@ -10,7 +10,8 @@
     {% block table-wrapper %}
     <div class="container">
         {% block table %}
-            <table id="example" class="table table-striped table-bordered">
+            <table id="example" class="table table-striped table-bordered table-hover">
+            <tbody>
                 {% block table.thead %}
                 {% if table.show_header %}
                     <thead class="thead-dark">
@@ -84,6 +85,7 @@
                 </tfoot>
                 {% endif %}
                 {% endblock table.tfoot %}
+            </tbody>
             </table>
         {% endblock table %}
 
@@ -92,9 +94,10 @@
             <ul class="pagination">
                 {% if table.page.has_previous %}
                     {% block pagination.previous %}
-                        <li class="previous">
-                            <a href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}">
-                                {% trans 'previous' %}
+                        <li class="page-item previous">
+                            <a class="page-link bg-dark text-light" href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">{% trans 'previous' %}</span>
                             </a>
                         </li>
                     {% endblock pagination.previous %}
@@ -102,11 +105,11 @@
                 {% if table.page.has_previous or table.page.has_next %}
                 {% block pagination.range %}
                     {% for p in table.page|table_page_range:table.paginator %}
-                        <li {% if p == table.page.number %}class="active"{% endif %}>
+                        <li class="page-item" {% if p == table.page.number %}class="active"{% endif %}>
                             {% if p == '...' %}
-                                <a href="#">{{ p }}</a>
+                                <a class="page-link bg-dark text-light" href="#">{{ p }}</a>
                             {% else %}
-                                <a href="{% querystring table.prefixed_page_field=p %}">
+                                <a class="page-link bg-dark text-light" href="{% querystring table.prefixed_page_field=p %}">
                                     {{ p }}
                                 </a>
                             {% endif %}
@@ -116,9 +119,10 @@
                 {% endif %}
                 {% if table.page.has_next %}
                     {% block pagination.next %}
-                        <li class="next">
-                            <a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}">
-                                {% trans 'next' %}
+                        <li class="page-item next">
+                            <a class="page-link bg-dark text-light" href="{% querystring table.prefixed_page_field=table.page.next_page_number %}">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">{% trans 'next' %}</span>
                             </a>
                         </li>
                     {% endblock pagination.next %}
