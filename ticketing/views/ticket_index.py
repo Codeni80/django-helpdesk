@@ -1,5 +1,5 @@
 from ticketing.models import Ticket, Category, Status, TicketTable, CustomUser
-from ticketing.forms import CustomUserCreationForm, TicketForm, EditTicketForm, FilterBy
+from ticketing.forms import CustomUserCreationForm, TicketForm, EditTicketForm
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django_tables2 import RequestConfig
