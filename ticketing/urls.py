@@ -8,4 +8,5 @@ urlpatterns = [
     path("accounts/register/", views.register, name="register"),
     path("new_ticket/", views.new_ticket, name="new_ticket"),
     path('upload/csv', views.upload_csv, name='upload_csv'),
+    # path('<filter_type>', views.category_index, name="category_index"),
 ]

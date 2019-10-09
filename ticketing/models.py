@@ -88,6 +88,13 @@ class CustomUser(AbstractUser):
         blank=True,
         default="-pk",
     )
+    u_filter_type = models.CharField(
+        max_length=100,
+        verbose_name="Filter By Value",
+        null=True,
+        blank=True,
+        default=None,
+    )
 
     def __str__(self):
         return self.u_name

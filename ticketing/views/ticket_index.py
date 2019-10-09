@@ -1,5 +1,5 @@
 from ticketing.models import Ticket, Category, Status, TicketTable, CustomUser
-from ticketing.forms import CustomUserCreationForm, TicketForm, EditTicketForm
+from ticketing.forms import CustomUserCreationForm, TicketForm, EditTicketForm, FilterBy
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django_tables2 import RequestConfig
@@ -14,12 +14,10 @@ import sys
 from helpdesk.settings import STATICFILES_DIRS
 
 @login_required
-def ticketing_index(request, pk=None):
+def ticketing_index(request):
     current_user = request.user
     user = get_user_model()
     print("STATIC DIRS: {}".format(STATICFILES_DIRS), file=sys.stderr)
-    if pk is not None:
-        success_message = "Ticket {0} Created Successfully".format(pk)
 
     # Checking for sort type, setting it if we can
     if not current_user.u_sort_type:
@@ -77,3 +75,24 @@ def ticketing_index(request, pk=None):
         RequestConfig(request, paginate={"per_page": 20}).configure(table)
 
         return render(request, "ticketing_index.html", {"table": table})
+
+def category_helper(sort_by, filter_by):
+    pass
+
+def status_helper(sort_by, filter_by):
+    pass
+
+def all_ticket_helper(sort_by, filter_by):
+    pass
+
+def assigned_ticket_helper(sort_by, filter_by):
+    pass
+
+def active_tickets_helper(sort_by, filter_by):
+    pass
+
+def closed_tickets_helper(sort_by, filter_by):
+    pass
+
+def unasigned_tickets_helper(sort_by, filter_by):
+    pass

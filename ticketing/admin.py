@@ -29,6 +29,7 @@ class CustomUserAdmin(admin.ModelAdmin):
         "u_phone",
         "u_permission_level",
         "u_sort_type",
+        "u_filter_type",
     ]
 
 
