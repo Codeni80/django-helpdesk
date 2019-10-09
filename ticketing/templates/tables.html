@@ -19,7 +19,7 @@
                             {% if column.header == 'Subject' %}
                                 <th class="subject" {{ column.attrs.th.as_html }}>
                                     {% if column.orderable %}
-                                        <a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
+                                        <a class="text-light" href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
                                     {% else %}
                                         {{ column.header }}
                                     {% endif %}
@@ -27,7 +27,7 @@
                             {% elif column.header == 'Category' %}
                                 <th class="category" {{ column.attrs.th.as_html }}>
                                     {% if column.orderable %}
-                                        <a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
+                                        <a class="text-light" href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
                                     {% else %}
                                         {{ column.header }}
                                     {% endif %}
@@ -35,7 +35,7 @@
                             {% elif column.header == 'Ticket ID' %}
                                 <th class="id" {{ column.attrs.th.as_html }}>
                                     {% if column.orderable %}
-                                        <a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
+                                        <a class="text-light" href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
                                     {% else %}
                                         {{ column.header }}
                                     {% endif %}
@@ -43,7 +43,7 @@
                             {% else %}
                                 <th class="headers" {{ column.attrs.th.as_html }}>
                                     {% if column.orderable %}
-                                        <a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
+                                        <a class="text-light" href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
                                     {% else %}
                                         {{ column.header }}
                                     {% endif %}

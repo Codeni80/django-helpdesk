@@ -44,7 +44,9 @@ def new_ticket(request):
             queryset = Ticket.objects.all()
             
             # return redirect("ticket_detail", pk=ticket.pk)
-            messages.success(request, 'Ticket {0} Created Successfully!'.format(ticket.pk))
+            messages.success(request, 
+                '<strong>Success!</strong> Created Ticket <a class=\'text-dark\' href=\'ticket_detail/{0}\'><strong><u>#{0}</u></strong></a>!'.format(ticket.pk),
+                extra_tags='safe')
             return redirect('ticketing_index')
     else:
         form = TicketForm(t_choices=techs, 

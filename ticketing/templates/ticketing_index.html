@@ -6,14 +6,22 @@
             <title>All Tickets</title>
         </head>
         <body>
-            {% for message in messages %}
             <div class="container">
-                <div class="alert alert-success alert-dismissible text-center" role="alert">
-                    {{ message }}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible text-center alert-area hide alert-message" role="alert">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close"><span aria-hidden="true">&times;</span></a>
+                    {% if 'safe' in message.tags %}
+                        {{ message|safe }}
+                    {% else %}
+                        {{ message }}
+                    {% endif %}
                 </div>
-            </div>
             {% endfor %}
+            </div>
             {% render_table table %}
         </body>
     </html>
+    {% load static %}
+    <script src="{% static 'js/my.js' %}"></script>
 {% endblock %}
+
