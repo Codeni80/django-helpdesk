@@ -49,6 +49,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
 ]
 
 ROOT_URLCONF = "helpdesk.urls"
@@ -131,3 +133,4 @@ AUTH_USER_MODEL = "ticketing.CustomUser"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+SESSION_EXPIRE_SECONDS = 43200 # Expire session after 12 hours
