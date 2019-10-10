@@ -111,17 +111,16 @@ class FilterForm(forms.Form):
                 if option.name != "Open":
                     T_CHOICES.append(("/?filter={}".format(option.name), "All {} Tickets".format(option.name)))
         
-        U_CHOICES = [('/?None', 'All Tickets'), 
-            ('/?active', 'All Active Tickets'), 
-            ('/?Closed', 'All Closed Tickets')]
+        U_CHOICES = [('/?filter=None', 'All Tickets'), 
+            ('/?filter=active', 'All Active Tickets'), 
+            ('/?filter=Closed', 'All Closed Tickets')]
 
         if self.perms == "2":
             self.fields['filter'] = forms.ChoiceField(choices=T_CHOICES, widget=forms.Select(attrs={'class':'filter'}))
         else:
-            self.fields['filter'] = forms.ChoiceField(choices=U_CHOICES)
-        try:
-            self.fields['filter'].initial = ("/?filter={}".format(self.filter_by), "All {} Tickets".format(self.filter_by))
-        except:
-            print("error")
+            self.fields['filter'] = forms.ChoiceField(choices=U_CHOICES, widget=forms.Select(attrs={'class':'filter'}))
+
+        self.fields['filter'].initial = ("/?filter={}".format(self.filter_by), "All {} Tickets".format(self.filter_by))
+
     class Meta:
         fields = ("filter")
