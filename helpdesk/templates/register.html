@@ -3,7 +3,34 @@
     <h2>Register</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
+        {{ form.non_field_errors }}
+
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+        {% endfor %}
+        <table>
+            {% for field in form.visible_fields %}
+                <tr>
+                    <th style="text-align:right">{{ field.label_tag }}</th>
+                    <td>
+                        {{ field.errors }}
+                        {{ field }}
+                        {{ field.help_text }}
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td>
+                    <button type="submit">Register</button>
+                </td>
+            </tr>
+        </table>
     </form>
 {% endblock %}
+<script>
+    $(document).ready(function() {
+        $('.has-popover').popover({'trigger':'hover'});
+    });
+</script>

@@ -4,6 +4,7 @@
     .subject{width: 20%;}
     .category{width: 13%;}
     .id{width:7%;}
+    a.menu_links {cursor: pointer;}
 </style>
 {% load django_tables2 %}
     {% load i18n %}
@@ -150,6 +151,9 @@ $(document).ready(function() {
         }
     });
 
+});
+$(document).ready(function(){
+    $('#example tr td').css('cursor', 'pointer');
 });
 </script>
 
