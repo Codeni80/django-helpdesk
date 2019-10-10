@@ -27,7 +27,6 @@ def ticket_detail(request, pk):
     t_subject = ticket.t_subject
     t_body = ticket.t_body
     t_status = ticket.t_status
-
     category_choices = Category.objects.all()
 
     t_category = ticket.t_category.pk

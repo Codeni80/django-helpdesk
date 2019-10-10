@@ -10,6 +10,14 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ("u_name", "username", "u_phone", "email", "u_permission_level")
+    def __init__(self, *args, **kwargs):
+        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+        self.fields['u_name'].widget.attrs.update({'autofocus': 'autofocus'})
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update({'class':'has-popover', 'data-content':help_text, 'data-placement':'right', 'data-container':'body'})
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -84,3 +92,36 @@ class EditTicketForm(forms.ModelForm):
         model = Ticket
         fields = ("t_status", "t_subject", "t_body", "t_category")
 
+
+class FilterForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.perms = kwargs.pop('u_permission_level')
+        self.filter_by = kwargs.pop('filter_by')
+        super(FilterForm, self).__init__(*args, **kwargs)
+        T_CHOICES = [('/?filter=None', 'All Tickets'),
+            ('/?filter=active', 'All Active Tickets'), 
+            ('/?filter=Closed', 'All Closed Tickets'), 
+            ('/?filter=assigned', "My Assigned Tickets"), 
+            (' ', '---------------Category Views---------------')]
+        for option in Category.objects.all():
+            T_CHOICES.append(("/?filter={}".format(option.name), "All {} Tickets".format(option.name)))
+        T_CHOICES.append(('blank', '-----------------Status Views-----------------'))
+        for option in Status.objects.all():
+            if option.name != "Closed":
+                if option.name != "Open":
+                    T_CHOICES.append(("/?filter={}".format(option.name), "All {} Tickets".format(option.name)))
+        
+        U_CHOICES = [('/?None', 'All Tickets'), 
+            ('/?active', 'All Active Tickets'), 
+            ('/?Closed', 'All Closed Tickets')]
+
+        if self.perms == "2":
+            self.fields['filter'] = forms.ChoiceField(choices=T_CHOICES, widget=forms.Select(attrs={'class':'filter'}))
+        else:
+            self.fields['filter'] = forms.ChoiceField(choices=U_CHOICES)
+        try:
+            self.fields['filter'].initial = ("/?filter={}".format(self.filter_by), "All {} Tickets".format(self.filter_by))
+        except:
+            print("error")
+    class Meta:
+        fields = ("filter")
