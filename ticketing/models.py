@@ -2,6 +2,7 @@ from django.db import models
 import django_tables2 as tables
 from django_tables2.utils import A
 from django.contrib.auth.models import AbstractUser
+from django.db.models.functions import Lower
 
 
 class Ticket(models.Model):
@@ -58,6 +59,37 @@ class TicketTable(tables.Table):
         attrs={"a": {"style": "color:black"}},
     )
     t_subject = tables.Column(verbose_name="Subject", order_by="t_subject_lower")
+
+
+    def order_t_category(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            t_category_lower=Lower("t_category__name")
+        ).order_by(("-" if is_descending else "") + "t_category_lower")
+        return (queryset, True)
+
+    def order_t_status(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            t_status_lower=Lower("t_status__name")
+        ).order_by(("-" if is_descending else "") + "t_status_lower")
+        return (queryset, True)
+
+    def order_c_info(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            c_info_lower=Lower("c_info__u_name")
+        ).order_by(("-" if is_descending else "") + "c_info_lower")
+        return (queryset, True)
+
+    def order_t_assigned(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            t_assigned_lower=Lower("t_assigned__u_name")
+        ).order_by(("-" if is_descending else "") + "t_assigned_lower")
+        return (queryset, True)
+
+    def order_t_subject(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            t_subject_lower=Lower("t_subject")
+        ).order_by(("-" if is_descending else "") + "t_subject_lower")
+        return (queryset, True)
 
     class Meta:
         model = Ticket
