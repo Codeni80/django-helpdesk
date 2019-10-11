@@ -101,7 +101,8 @@ class FilterForm(forms.Form):
         T_CHOICES = [('/?filter=None', 'All Tickets'),
             ('/?filter=active', 'All Active Tickets'), 
             ('/?filter=Closed', 'All Closed Tickets'), 
-            ('/?filter=assigned', "My Assigned Tickets"), 
+            ('/?filter=assigned', "My Assigned Tickets"),
+            ('/?filter=unassigned', "All Unassigned Tickets"),
             (' ', '---------------Category Views---------------')]
         for option in Category.objects.all():
             T_CHOICES.append(("/?filter={}".format(option.name), "All {} Tickets".format(option.name)))

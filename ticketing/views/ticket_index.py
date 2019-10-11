@@ -57,8 +57,8 @@ def ticketing_index(request):
         queryset = assigned_ticket_helper(current_user, current_user.u_permission_level, sort_by, user.u_filter_type)
     elif current_user.u_filter_type == 'active':
         queryset = active_tickets_helper(current_user, current_user.u_permission_level, sort_by, user.u_filter_type)
-    elif current_user.u_filter_type == 'unasigned':
-        queryset = unasigned_tickets_helper(current_user, current_user.u_permission_level, sort_by, user.u_filter_type)
+    elif current_user.u_filter_type == 'unassigned':
+        queryset = unassigned_tickets_helper(current_user, current_user.u_permission_level, sort_by, user.u_filter_type)
     else:
         queryset = Ticket.objects.filter(c_info=None)
     table = TicketTable(queryset)
@@ -176,13 +176,80 @@ def all_ticket_helper(current_user, perms, sort_by, filter_by):
 
 
 def assigned_ticket_helper(current_user, perms, sort_by, filter_by):
-    pass
+    if perms == "2":
+        if sort_by == 't_subject' or sort_by == '-t_subject':
+            if sort_by[0] == "-":
+                sort_by = sort_by[1:]
+                queryset = Ticket.objects.filter(
+                    t_assigned__username__contains=current_user.username).annotate(
+                    t_subject_lower=Lower("t_subject")
+                ).order_by(Lower(sort_by).desc())
+            else:
+                queryset = Ticket.objects.filter(
+                    t_assigned__username__contains=current_user.username).annotate(
+                    t_subject_lower=Lower("t_subject")
+                ).order_by(Lower(sort_by).asc())
+        else:
+            queryset = Ticket.objects.filter(t_assigned__username__contains=current_user.username).order_by(sort_by)
+        return queryset
+    else:
+        queryset = all_ticket_helper(current_user, current_user.u_permission_level, sort_by, None)
+        return queryset
 
 def active_tickets_helper(current_user, perms, sort_by, filter_by):
-    pass
+    if perms == "2":
+        if sort_by == 't_subject' or sort_by == '-t_subject':
+            if sort_by[0] == "-":
+                sort_by = sort_by[1:]
+                queryset = Ticket.objects.filter(
+                    t_status__name__contains=filter_by).annotate(
+                    t_subject_lower=Lower("t_subject")
+                ).order_by(Lower(sort_by).desc())
+            else:
+                queryset = Ticket.objects.filter(
+                    t_status__name__contains=filter_by).annotate(
+                    t_subject_lower=Lower("t_subject")
+                ).order_by(Lower(sort_by).asc())
+        else:
+            queryset = Ticket.objects.all().exclude(t_status__name__contains='Closed').order_by(sort_by)
+    else:
+        # Non-technicians only see tickets made by/for them.
+        if sort_by == 't_subject' or sort_by == '-t_subject':
+            if sort_by[0] == "-":
+                sort_by = sort_by[1:]
+                queryset = Ticket.objects.filter(
+                    c_info__username=current_user.username, 
+                    t_status__name__contains=filter_by
+                ).annotate(t_subject_lower=Lower("t_subject")).order_by(Lower(sort_by).desc())
+            else:
+                queryset = Ticket.objects.filter(
+                    c_info__username=current_user.username,
+                    t_status__name__contains=filter_by
+                ).annotate(t_subject_lower=Lower("t_subject")).order_by(Lower(sort_by).asc())
+        else:
+            queryset = Ticket.objects.filter(
+                c_info__username=current_user.username,
+                t_status__name__contains=filter_by
+            ).order_by(sort_by)
+    return queryset
 
-def closed_tickets_helper(current_user, perms, sort_by, filter_by):
-    pass
-
-def unasigned_tickets_helper(current_user, perms, sort_by, filter_by):
-    pass
+def unassigned_tickets_helper(current_user, perms, sort_by, filter_by):
+    if perms == "2":
+        if sort_by == 't_subject' or sort_by == '-t_subject':
+            if sort_by[0] == "-":
+                sort_by = sort_by[1:]
+                queryset = Ticket.objects.filter(
+                    t_assigned__username__isnull=True).annotate(
+                    t_subject_lower=Lower("t_subject")
+                ).order_by(Lower(sort_by).desc())
+            else:
+                queryset = Ticket.objects.filter(
+                    t_assigned__username__isnull=True).annotate(
+                    t_subject_lower=Lower("t_subject")
+                ).order_by(Lower(sort_by).asc())
+        else:
+            queryset = Ticket.objects.filter(t_assigned__username__isnull=True).order_by(sort_by)
+        return queryset
+    else:
+        queryset = all_ticket_helper(current_user, current_user.u_permission_level, sort_by, None)
+        return queryset
