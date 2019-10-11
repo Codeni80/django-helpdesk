@@ -201,13 +201,11 @@ def active_tickets_helper(current_user, perms, sort_by, filter_by):
         if sort_by == 't_subject' or sort_by == '-t_subject':
             if sort_by[0] == "-":
                 sort_by = sort_by[1:]
-                queryset = Ticket.objects.filter(
-                    t_status__name__contains=filter_by).annotate(
+                queryset = Ticket.objects.all().exclude(t_status__name__contains='Closed').annotate(
                     t_subject_lower=Lower("t_subject")
                 ).order_by(Lower(sort_by).desc())
             else:
-                queryset = Ticket.objects.filter(
-                    t_status__name__contains=filter_by).annotate(
+                queryset = Ticket.objects.all().exclude(t_status__name__contains='Closed').annotate(
                     t_subject_lower=Lower("t_subject")
                 ).order_by(Lower(sort_by).asc())
         else:
