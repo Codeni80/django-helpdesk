@@ -5,14 +5,18 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('ticketing', '0014_auto_20191003_1017'),
-    ]
+    dependencies = [("ticketing", "0014_auto_20191003_1017")]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='u_filter_type',
-            field=models.CharField(blank=True, default=None, max_length=100, null=True, verbose_name='Filter By Value'),
-        ),
+            model_name="customuser",
+            name="u_filter_type",
+            field=models.CharField(
+                blank=True,
+                default=None,
+                max_length=100,
+                null=True,
+                verbose_name="Filter By Value",
+            ),
+        )
     ]

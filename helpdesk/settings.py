@@ -49,8 +49,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django_session_timeout.middleware.SessionTimeoutMiddleware',
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django_session_timeout.middleware.SessionTimeoutMiddleware",
 ]
 
 ROOT_URLCONF = "helpdesk.urls"
@@ -116,21 +116,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 CURRENT_PATH = os.path.abspath(os.path.dirname(__file__))
-MEDIA_ROOT = os.path.join(CURRENT_PATH, 'media')
+MEDIA_ROOT = os.path.join(CURRENT_PATH, "media")
 
-MEDIA_URL = '/media/'
+MEDIA_URL = "/media/"
 
 STATIC_URL = "/static/"
 
 STATIC_ROOT = "/static/"
 
-STATICFILES_DIRS = (
-                    os.path.join(CURRENT_PATH, 'static'),
-)
+STATICFILES_DIRS = (os.path.join(CURRENT_PATH, "static"),)
 
 AUTH_USER_MODEL = "ticketing.CustomUser"
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
-SESSION_EXPIRE_SECONDS = 43200 # Expire session after 12 hours
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
+SESSION_EXPIRE_SECONDS = 43200  # Expire session after 12 hours

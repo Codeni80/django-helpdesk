@@ -7,6 +7,9 @@ urlpatterns = [
     path("ticket_detail/<int:pk>/", views.ticket_detail, name="ticket_detail"),
     path("accounts/register/", views.register, name="register"),
     path("new_ticket/", views.new_ticket, name="new_ticket"),
-    path('upload/csv', views.upload_csv, name='upload_csv'),
-    # path('<filter_type>', views.category_index, name="category_index"),
+    path("upload/csv", views.upload_csv, name="upload_csv"),
+    path("accounts/edit_user", views.user_search, name="edit_user"),
+    path("accounts/edit_user/<int:pk>/", views.update_user, name="update_user"),
+    path("accounts/search_results/", views.search_results, name="search_results"),
+    path("accounts/change_password", views.change_password, name="change_password"),
 ]

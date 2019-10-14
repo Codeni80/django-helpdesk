@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block page_content %}
+{% load render_table from django_tables2 %}
+    <h2 class='text-center'>Select User to Update</h2>
+    <form method="post">
+        {% render_table table %}
+
+    {% load static %}
+    <script src="{% static 'js/my.js' %}"></script>
+    <script>
+    $(document).ready(function() {
+        $('.filter').change(function(e) {
+            window.location = $(this).val();
+        });
+    });
+    </script>
+{% endblock %}

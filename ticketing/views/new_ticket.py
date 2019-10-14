@@ -13,47 +13,59 @@ from django.utils import timezone
 from django.db.models.functions import Lower
 from django.contrib import messages
 
+
 @login_required
 def new_ticket(request):
-    t_choices = [(0, "---------")]
-    techs = get_user_model()
-    techs = techs.objects.filter(u_permission_level=2)
-    user_obj = request.user
-    perm_level = user_obj.u_permission_level
-    user = user_obj.u_name
-    c_choices = CustomUser.objects.all()
-    
-
-    if request.method == "POST":
-        form = TicketForm(request.POST, t_choices=techs, 
-            perm_level=perm_level,
-            u_name=user_obj,
-            c_choices=c_choices)
-        if form.is_valid():
-            ticket = form.save(commit=False)
-            ticket.timestamp = timezone.now()
-            ticket.t_opened = timezone.now()
-            ticket.t_subject = ticket.t_subject.capitalize()
-
-            if ticket.t_status.name == "Closed":
-                # We set the current time to ticket.t_closed
-                # Only if t_status is set to closed
-                ticket.t_closed = timezone.now()
-
-            ticket.save()
-            queryset = Ticket.objects.all()
-            
-            # return redirect("ticket_detail", pk=ticket.pk)
-            messages.success(request, 
-                '<strong>Success!</strong> Created Ticket <a class=\'text-dark\' href=\'ticket_detail/{0}\'><strong><u>#{0}</u></strong></a>!'.format(ticket.pk),
-                extra_tags='safe')
-            return redirect('ticketing_index')
+    if request.user.force_change == True:
+        return redirect("change_password")
     else:
-        form = TicketForm(t_choices=techs, 
-            perm_level=perm_level,
-            u_name=user_obj,
-            c_choices=c_choices)
+        t_choices = [(0, "---------")]
+        techs = get_user_model()
+        techs = techs.objects.filter(u_permission_level=2)
+        user_obj = request.user
+        perm_level = user_obj.u_permission_level
+        user = user_obj.u_name
+        c_choices = CustomUser.objects.all()
 
-    context = {"form": form}
+        if request.method == "POST":
+            form = TicketForm(
+                request.POST,
+                t_choices=techs,
+                perm_level=perm_level,
+                u_name=user_obj,
+                c_choices=c_choices,
+            )
+            if form.is_valid():
+                ticket = form.save(commit=False)
+                ticket.timestamp = timezone.now()
+                ticket.t_opened = timezone.now()
+                ticket.t_subject = ticket.t_subject.capitalize()
 
-    return render(request, "new_ticket.html", context)
+                if ticket.t_status.name == "Closed":
+                    # We set the current time to ticket.t_closed
+                    # Only if t_status is set to closed
+                    ticket.t_closed = timezone.now()
+
+                ticket.save()
+                queryset = Ticket.objects.all()
+
+                # return redirect("ticket_detail", pk=ticket.pk)
+                messages.success(
+                    request,
+                    "<strong>Success!</strong> Created Ticket <a class='text-dark' href='ticket_detail/{0}'><strong><u>#{0}</u></strong></a>!".format(
+                        ticket.pk
+                    ),
+                    extra_tags="safe",
+                )
+                return redirect("ticketing_index")
+        else:
+            form = TicketForm(
+                t_choices=techs,
+                perm_level=perm_level,
+                u_name=user_obj,
+                c_choices=c_choices,
+            )
+
+        context = {"form": form}
+
+        return render(request, "new_ticket.html", context)

@@ -76,6 +76,12 @@ class TicketTable(tables.Table):
 
 class CustomUser(AbstractUser):
     ROLE_CHOICES = (("1", "User"), ("2", "Technician"))
+    force_change = models.BooleanField(
+        verbose_name="Force Password Change on Next Login",
+        default=True,
+        blank=False,
+        null=False,
+    )
     u_name = models.CharField(max_length=150, verbose_name="Customer Name")
     u_phone = models.CharField(max_length=14, verbose_name="Customer Phone Number")
     u_permission_level = models.CharField(
@@ -98,3 +104,17 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.u_name
+
+
+class UsersTable(tables.Table):
+    pk = tables.LinkColumn(
+        "update_user",
+        args=[A("pk")],
+        verbose_name="Customer ID",
+        attrs={"a": {"style": "color:black"}},
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ("username", "u_name", "last_login")
+        template_name = "tables.html"
