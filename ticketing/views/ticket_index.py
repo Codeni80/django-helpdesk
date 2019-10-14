@@ -107,6 +107,7 @@ def ticketing_index(request):
 
 def category_helper(current_user, perms, sort_by, filter_by):
     if perms == "2":
+<<<<<<< HEAD
         if sort_by == "t_subject" or sort_by == "-t_subject":
             if sort_by[0] == "-":
                 sort_by = sort_by[1:]
@@ -152,11 +153,21 @@ def category_helper(current_user, perms, sort_by, filter_by):
                 c_info__username=current_user.username,
                 t_category__name__contains=filter_by,
             ).order_by(sort_by)
+=======
+        queryset = Ticket.objects.filter(t_category__name__contains=filter_by).order_by(sort_by)
+    else:
+        # Non-technicians only see tickets made by/for them.
+        queryset = Ticket.objects.filter(
+            c_info__username=current_user.username,
+            t_category__name__contains=filter_by
+        ).order_by(sort_by)
+>>>>>>> 4e14eb17b6c48cb377b66478e3db61433db7f7b1
     return queryset
 
 
 def status_helper(current_user, perms, sort_by, filter_by):
     if perms == "2":
+<<<<<<< HEAD
         if sort_by == "t_subject" or sort_by == "-t_subject":
             if sort_by[0] == "-":
                 sort_by = sort_by[1:]
@@ -202,11 +213,21 @@ def status_helper(current_user, perms, sort_by, filter_by):
                 c_info__username=current_user.username,
                 t_status__name__contains=filter_by,
             ).order_by(sort_by)
+=======
+        queryset = Ticket.objects.filter(t_status__name__contains=filter_by).order_by(sort_by)
+    else:
+        # Non-technicians only see tickets made by/for them.
+        queryset = Ticket.objects.filter(
+            c_info__username=current_user.username,
+            t_status__name__contains=filter_by
+        ).order_by(sort_by)
+>>>>>>> 4e14eb17b6c48cb377b66478e3db61433db7f7b1
     return queryset
 
 
 def all_ticket_helper(current_user, perms, sort_by, filter_by):
     if perms == "2":
+<<<<<<< HEAD
         if sort_by == "t_subject" or sort_by == "-t_subject":
             if sort_by[0] == "-":
                 sort_by = sort_by[1:]
@@ -239,11 +260,20 @@ def all_ticket_helper(current_user, perms, sort_by, filter_by):
             queryset = Ticket.objects.filter(
                 c_info__username=current_user.username
             ).order_by(sort_by)
+=======
+        queryset = Ticket.objects.all().order_by(sort_by)
+    else:
+        # Non-technicians only see tickets made by/for them.
+        queryset = Ticket.objects.filter(
+            c_info__username=current_user.username
+        ).order_by(sort_by)
+>>>>>>> 4e14eb17b6c48cb377b66478e3db61433db7f7b1
     return queryset
 
 
 def assigned_ticket_helper(current_user, perms, sort_by, filter_by):
     if perms == "2":
+<<<<<<< HEAD
         if sort_by == "t_subject" or sort_by == "-t_subject":
             if sort_by[0] == "-":
                 sort_by = sort_by[1:]
@@ -266,6 +296,9 @@ def assigned_ticket_helper(current_user, perms, sort_by, filter_by):
             queryset = Ticket.objects.filter(
                 t_assigned__username__contains=current_user.username
             ).order_by(sort_by)
+=======
+        queryset = Ticket.objects.filter(t_assigned__username__contains=current_user.username).exclude(t_status__name__contains='Closed').order_by(sort_by)
+>>>>>>> 4e14eb17b6c48cb377b66478e3db61433db7f7b1
         return queryset
     else:
         queryset = all_ticket_helper(
@@ -276,6 +309,7 @@ def assigned_ticket_helper(current_user, perms, sort_by, filter_by):
 
 def active_tickets_helper(current_user, perms, sort_by, filter_by):
     if perms == "2":
+<<<<<<< HEAD
         if sort_by == "t_subject" or sort_by == "-t_subject":
             if sort_by[0] == "-":
                 sort_by = sort_by[1:]
@@ -325,11 +359,21 @@ def active_tickets_helper(current_user, perms, sort_by, filter_by):
                 c_info__username=current_user.username,
                 t_status__name__contains=filter_by,
             ).order_by(sort_by)
+=======
+        queryset = Ticket.objects.all().exclude(t_status__name__contains='Closed').order_by(sort_by)
+    else:
+        # Non-technicians only see tickets made by/for them.
+        queryset = Ticket.objects.filter(
+            c_info__username=current_user.username,
+           t_status__name__contains=filter_by
+        ).order_by(sort_by)
+>>>>>>> 4e14eb17b6c48cb377b66478e3db61433db7f7b1
     return queryset
 
 
 def unassigned_tickets_helper(current_user, perms, sort_by, filter_by):
     if perms == "2":
+<<<<<<< HEAD
         if sort_by == "t_subject" or sort_by == "-t_subject":
             if sort_by[0] == "-":
                 sort_by = sort_by[1:]
@@ -348,6 +392,9 @@ def unassigned_tickets_helper(current_user, perms, sort_by, filter_by):
             queryset = Ticket.objects.filter(
                 t_assigned__username__isnull=True
             ).order_by(sort_by)
+=======
+        queryset = Ticket.objects.filter(t_assigned__username__isnull=True).order_by(sort_by)
+>>>>>>> 4e14eb17b6c48cb377b66478e3db61433db7f7b1
         return queryset
     else:
         queryset = all_ticket_helper(
