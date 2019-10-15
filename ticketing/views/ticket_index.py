@@ -107,51 +107,13 @@ def ticketing_index(request):
 
 def category_helper(current_user, perms, sort_by, filter_by):
     if perms == "2":
-        if sort_by == "t_subject" or sort_by == "-t_subject":
-            if sort_by[0] == "-":
-                sort_by = sort_by[1:]
-                queryset = (
-                    Ticket.objects.filter(t_category__name__contains=filter_by)
-                    .annotate(t_subject_lower=Lower("t_subject"))
-                    .order_by(Lower(sort_by).desc())
-                )
-            else:
-                queryset = (
-                    Ticket.objects.filter(t_category__name__contains=filter_by)
-                    .annotate(t_subject_lower=Lower("t_subject"))
-                    .order_by(Lower(sort_by).asc())
-                )
-        else:
-            queryset = Ticket.objects.filter(
-                t_category__name__contains=filter_by
-            ).order_by(sort_by)
+        queryset = Ticket.objects.filter(t_category__name__contains=filter_by).order_by(sort_by)
     else:
         # Non-technicians only see tickets made by/for them.
-        if sort_by == "t_subject" or sort_by == "-t_subject":
-            if sort_by[0] == "-":
-                sort_by = sort_by[1:]
-                queryset = (
-                    Ticket.objects.filter(
-                        c_info__username=current_user.username,
-                        t_category__name__contains=filter_by,
-                    )
-                    .annotate(t_subject_lower=Lower("t_subject"))
-                    .order_by(Lower(sort_by).desc())
-                )
-            else:
-                queryset = (
-                    Ticket.objects.filter(
-                        c_info__username=current_user.username,
-                        t_category__name__contains=filter_by,
-                    )
-                    .annotate(t_subject_lower=Lower("t_subject"))
-                    .order_by(Lower(sort_by).asc())
-                )
-        else:
-            queryset = Ticket.objects.filter(
-                c_info__username=current_user.username,
-                t_category__name__contains=filter_by,
-            ).order_by(sort_by)
+        queryset = Ticket.objects.filter(
+            c_info__username=current_user.username,
+            t_category__name__contains=filter_by
+        ).order_by(sort_by)
     return queryset
 
 
