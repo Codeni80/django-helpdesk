@@ -2,6 +2,7 @@ from django.db import models
 import django_tables2 as tables
 from django_tables2.utils import A
 from django.contrib.auth.models import AbstractUser
+from django.db.models.functions import Lower
 
 
 class Ticket(models.Model):
