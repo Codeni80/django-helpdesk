@@ -19,8 +19,6 @@ def ticket_detail(request, pk):
         return redirect("change_password")
     else:
         current_user = request.user
-        print(current_user.u_permission_level, file=sys.stderr)
-
         ticket = Ticket.objects.get(pk=pk)
         updating_pk = ticket.pk
         updating_cinfo = ticket.c_info
