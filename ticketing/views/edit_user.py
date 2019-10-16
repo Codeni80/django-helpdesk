@@ -137,23 +137,31 @@ def update_user(request, pk=None):
 
             context = {"user": user}
             if request.method == "POST":
-                form = CustomUserChangeForm(request.POST, instance=user)
+                form = CustomUserChangeForm(request.POST,
+                    u_name=user.u_name,
+                    username=user.username,
+                    u_phone=user.u_phone,
+                    email=user.email,
+                    u_permission_level=user.u_permission_level,
+                    is_superuser=user.is_superuser,
+                    is_staff=user.is_staff,
+                    instance=user,
+                )
                 if form.is_valid():
-                    # user = form.save(commit=False)
-                    # user.pk = updating_pk
-                    # user.username = updating_username
-                    # user.u_name = updating_u_name
-                    # user.u_phone = updating_phone
-                    # user.email = updating_email
-                    # user.password = u
-                    # user.force_change = False
-                    # user.u_permission_level = updating_perms
-
                     user = form.save()
                     return redirect("ticketing_index")
             else:
                 # print("WE HIT AN ERROR SAVING THE TICKET!!!!!", file=sys.stderr)
-                form = CustomUserChangeForm()
+                form = CustomUserChangeForm(
+                    u_name=user.u_name,
+                    username=user.username,
+                    u_phone=user.u_phone,
+                    email=user.email,
+                    u_permission_level=user.u_permission_level,
+                    is_superuser=user.is_superuser,
+                    is_staff=user.is_staff,
+                    instance=user,
+                )
 
             context = {"form": form}
 

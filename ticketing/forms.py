@@ -30,7 +30,24 @@ class CustomUserCreationForm(UserCreationForm):
 
 class CustomUserChangeForm(UserChangeForm):
     password = None
-    # super_user = forms.CheckboxInput()
+    
+    def __init__(self, *args, **kwargs):
+        self.u_name = kwargs.pop('u_name')
+        self.username = kwargs.pop('username')
+        self.u_phone = kwargs.pop('u_phone')
+        self.email = kwargs.pop('email')
+        self.u_permission_level = kwargs.pop('u_permission_level')
+        self.is_superuser = kwargs.pop('is_superuser')
+        self.is_staff = kwargs.pop('is_staff')
+        super(CustomUserChangeForm, self).__init__(*args, **kwargs)
+        self.fields['u_name'].initial = self.u_name
+        self.fields['username'].initial = self.username
+        self.fields['u_phone'].initial = self.u_phone
+        self.fields['email'].initial = self.email
+        self.fields['u_permission_level'].initial = self.u_permission_level
+        self.fields['is_superuser'].initial = self.is_superuser
+        self.fields['is_staff'].initial = self.is_staff
+
     class Meta:
         model = CustomUser
         fields = (
