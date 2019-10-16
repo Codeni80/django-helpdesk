@@ -7,10 +7,6 @@ import sys
 
 
 class CustomUserCreationForm(UserCreationForm):
-    class Meta:
-        model = CustomUser
-        fields = ("u_name", "username", "u_phone", "email", "u_permission_level")
-
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
         self.fields["u_name"].widget.attrs.update({"autofocus": "autofocus"})
@@ -26,9 +22,15 @@ class CustomUserCreationForm(UserCreationForm):
                         "data-container": "body",
                     }
                 )
+                
+    class Meta:
+        model = CustomUser
+        fields = ("u_name", "username", "u_phone", "email", "u_permission_level", "is_superuser", "is_staff")
 
 
 class CustomUserChangeForm(UserChangeForm):
+    password = None
+    # super_user = forms.CheckboxInput()
     class Meta:
         model = CustomUser
         fields = (
@@ -37,7 +39,8 @@ class CustomUserChangeForm(UserChangeForm):
             "u_phone",
             "email",
             "u_permission_level",
-            "password",
+            "is_superuser",
+            "is_staff",
         )
 
 
@@ -170,16 +173,35 @@ class UserSearchForm(forms.Form):
         fields = "s_filter"
 
 
-class EditUserForm(forms.ModelForm):
+class EditUserPasswordForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.password = kwargs.pop("password")
         self.username = kwargs.pop("username")
-        super(EditUserForm, self).__init__(*args, **kwargs)
+        super(EditUserPasswordForm, self).__init__(*args, **kwargs)
         self.fields["password"].initial = self.username
 
     class Meta:
         model = CustomUser
         fields = ("password",)
+
+class EditUserForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        ROLE_CHOICES = (("1", "User"), ("2", "Technician"))
+        self.username = kwargs.pop("username")
+        self.u_name = kwargs.pop("u_name")
+        self.u_phone = kwargs.pop("u_phone")
+        self.email = kwargs.pop("email")
+        self.u_permission_level = kwargs.pop("u_permission_level")
+        super(EditUserForm, self).__init__(*args, **kwargs)
+        self.fields['u_name'].initial = self.u_name
+        self.fields['username'].initial = self.username
+        self.fields['u_phone'].initial = self.u_phone
+        self.fields['email'].initial = self.email
+        self.fields['u_permission_level'].initial = self.u_permission_level
+
+    class Meta:
+        model = CustomUser
+        fields = ('u_name', 'username', 'u_phone', 'email', 'u_permission_level')
 
 
 class PasswordChange(forms.Form):

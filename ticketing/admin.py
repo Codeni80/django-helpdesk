@@ -31,6 +31,8 @@ class CustomUserAdmin(admin.ModelAdmin):
         "u_sort_type",
         "u_filter_type",
         "force_change",
+        "is_superuser",
+        "is_staff"
     ]
 
 

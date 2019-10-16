@@ -33,7 +33,11 @@
             <tr>
                 <td></td>
                 <td>
-                    <button type="submit">Update</button>
+                    {% if request.path == '/accounts/edit_user' %}
+                        <button type="submit">Search</button>
+                    {% else %}
+                        <button type="submit">Update</button>
+                    {% endif %}
                 </td>
             </tr>
         </table>

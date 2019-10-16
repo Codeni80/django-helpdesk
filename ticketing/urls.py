@@ -9,7 +9,8 @@ urlpatterns = [
     path("new_ticket/", views.new_ticket, name="new_ticket"),
     path("upload/csv", views.upload_csv, name="upload_csv"),
     path("accounts/edit_user", views.user_search, name="edit_user"),
-    path("accounts/edit_user/<int:pk>/", views.update_user, name="update_user"),
+    path("accounts/edit_user/<int:pk>/", views.reset_password, name="reset_password"),
     path("accounts/search_results/", views.search_results, name="search_results"),
     path("accounts/change_password", views.change_password, name="change_password"),
+    path("accounts/edit_user/update/<int:pk>/", views.update_user, name="update_user")
 ]

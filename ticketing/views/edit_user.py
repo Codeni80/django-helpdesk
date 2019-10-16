@@ -10,6 +10,7 @@ from ticketing.forms import (
     CustomUserCreationForm,
     CustomUserChangeForm,
     UserSearchForm,
+    EditUserPasswordForm
 )
 from django.utils import timezone
 from django_tables2 import RequestConfig
@@ -61,16 +62,17 @@ def search_results(request):
             return redirect("/")
         else:
             result = request.GET["result"]
-            val = CustomUser.objects.filter(username__contains=result)
-            if not val:
-                val = CustomUser.objects.filter(u_name__contains=result)
+            username_val = CustomUser.objects.filter(username__contains=result)
+            u_name_val = CustomUser.objects.filter(u_name__contains=result)
+            val = username_val | u_name_val
+            print(val)
             table = UsersTable(val)
             RequestConfig(request).configure(table)
             return render(request, "user_search_results.html", {"table": table})
 
 
 @login_required
-def update_user(request, pk=None):
+def reset_password(request, pk=None):
     if request.user.force_change == True:
         return redirect("change_password")
     else:
@@ -90,7 +92,7 @@ def update_user(request, pk=None):
 
             context = {"user": user}
             if request.method == "POST":
-                form = EditUserForm(
+                form = EditUserPasswordForm(
                     request.POST, password=user.password, username=user.username
                 )
                 if form.is_valid():
@@ -108,7 +110,50 @@ def update_user(request, pk=None):
                     return redirect("ticketing_index")
             else:
                 # print("WE HIT AN ERROR SAVING THE TICKET!!!!!", file=sys.stderr)
-                form = EditUserForm(password=user.password, username=user.username)
+                form = EditUserPasswordForm(password=user.password, username=user.username)
+
+            context = {"form": form}
+
+            # return render(request, 'edit_ticket.html', context)
+            return render(request, "edit_user.html", context)
+
+@login_required
+def update_user(request, pk=None):
+    if request.user.force_change == True:
+        return redirect("change_password")
+    else:
+        current_user = request.user
+        if current_user.u_permission_level != "2":
+            return redirect("/")
+        else:
+            user = CustomUser.objects.get(pk=pk)
+            updating_pk = user.pk
+            updating_username = user.username
+            updating_u_name = user.u_name
+            updating_phone = user.u_phone
+            updating_email = user.email
+            updating_perms = user.u_permission_level
+            perm_choices = (("1", "User"), ("2", "Technician"))
+
+            context = {"user": user}
+            if request.method == "POST":
+                form = CustomUserChangeForm(request.POST, instance=user)
+                if form.is_valid():
+                    # user = form.save(commit=False)
+                    # user.pk = updating_pk
+                    # user.username = updating_username
+                    # user.u_name = updating_u_name
+                    # user.u_phone = updating_phone
+                    # user.email = updating_email
+                    # user.password = u
+                    # user.force_change = False
+                    # user.u_permission_level = updating_perms
+
+                    user = form.save()
+                    return redirect("ticketing_index")
+            else:
+                # print("WE HIT AN ERROR SAVING THE TICKET!!!!!", file=sys.stderr)
+                form = CustomUserChangeForm()
 
             context = {"form": form}
 

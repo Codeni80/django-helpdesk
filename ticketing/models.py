@@ -138,14 +138,25 @@ class CustomUser(AbstractUser):
 
 
 class UsersTable(tables.Table):
-    pk = tables.LinkColumn(
-        "update_user",
+    # pk = tables.LinkColumn(
+    #     "update_user",
+    #     args=[A("pk")],
+    #     verbose_name="Customer ID",
+    #     attrs={"a": {"style": "color:black"}},
+    # )
+    update_user = tables.LinkColumn(text='Update User Information',
+        viewname='update_user',
         args=[A("pk")],
-        verbose_name="Customer ID",
-        attrs={"a": {"style": "color:black"}},
+        verbose_name="Udate Information",
+        attrs={"a": {"style": "color:grey"}},
     )
-
+    change_password = tables.LinkColumn(text='Change Users Password',
+        viewname='reset_password',
+        args=[A("pk")],
+        verbose_name="Udate Information",
+        attrs={"a": {"style": "color:grey"}},
+    )
     class Meta:
         model = CustomUser
-        fields = ("username", "u_name", "last_login")
+        fields = ("username", "u_name", "last_login", "update_user", "change_password")
         template_name = "tables.html"
