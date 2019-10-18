@@ -135,16 +135,11 @@ class CustomUser(AbstractUser):
     )
     
     def dsl(self):
-        self.dsl = timezone.now() -  self.last_login
-        self.dsl_days = self.dsl.days
-        self.dsl_total = self.dsl.seconds
-        self.dsl_hours = int(self.dsl_total / 3600)
-        self.dsl_minutes = int(self.dsl_total / 60)
-        self.dsl_seconds = self.dsl_total % 60
+        dsl = timezone.now() -  self.last_login
+        dsl = str(dsl)
+        dsl = dsl.split(' ', 1)
 
-        self.dsl = "{0} Days, {1}Hr {2}Min {3}Sec".format(self.dsl_days, self.dsl_hours, self.dsl_minutes, self.dsl_seconds)
-
-        return(self.dsl)
+        return(dsl[0])
 
     def __str__(self):
         return self.u_name
@@ -165,9 +160,10 @@ class UsersTable(tables.Table):
         attrs={"a": {"style": "color:grey"}},
         orderable=False,
     )
-    dsl = tables.Column(verbose_name="Days Since Logn",
+    dsl = tables.Column(verbose_name="Days Since Login",
         accessor=A('dsl'),
     )
+
     class Meta:
         model = CustomUser
         fields = ("username", "u_name", "last_login", "dsl", "update_user", "change_password")
