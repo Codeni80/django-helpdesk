@@ -65,7 +65,6 @@ def search_results(request):
             username_val = CustomUser.objects.filter(username__contains=result)
             u_name_val = CustomUser.objects.filter(u_name__contains=result)
             val = username_val | u_name_val
-            print(val)
             table = UsersTable(val)
             RequestConfig(request).configure(table)
             return render(request, "user_search_results.html", {"table": table})

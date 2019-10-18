@@ -3,6 +3,7 @@ import django_tables2 as tables
 from django_tables2.utils import A
 from django.contrib.auth.models import AbstractUser
 from django.db.models.functions import Lower
+from django.utils import timezone
 
 
 class Ticket(models.Model):
@@ -132,31 +133,42 @@ class CustomUser(AbstractUser):
         blank=True,
         default=None,
     )
+    
+    def dsl(self):
+        self.dsl = timezone.now() -  self.last_login
+        self.dsl_days = self.dsl.days
+        self.dsl_total = self.dsl.seconds
+        self.dsl_hours = int(self.dsl_total / 3600)
+        self.dsl_minutes = int(self.dsl_total / 60)
+        self.dsl_seconds = self.dsl_total % 60
+
+        self.dsl = "{0} Days, {1}Hr {2}Min {3}Sec".format(self.dsl_days, self.dsl_hours, self.dsl_minutes, self.dsl_seconds)
+
+        return(self.dsl)
 
     def __str__(self):
         return self.u_name
 
 
 class UsersTable(tables.Table):
-    # pk = tables.LinkColumn(
-    #     "update_user",
-    #     args=[A("pk")],
-    #     verbose_name="Customer ID",
-    #     attrs={"a": {"style": "color:black"}},
-    # )
     update_user = tables.LinkColumn(text='Update User Information',
         viewname='update_user',
         args=[A("pk")],
-        verbose_name="Udate Information",
+        verbose_name="Update Information",
         attrs={"a": {"style": "color:grey"}},
+        orderable=False,
     )
-    change_password = tables.LinkColumn(text='Change Users Password',
+    change_password = tables.LinkColumn(text='Change User Password',
         viewname='reset_password',
         args=[A("pk")],
-        verbose_name="Udate Information",
+        verbose_name="Update Password",
         attrs={"a": {"style": "color:grey"}},
+        orderable=False,
+    )
+    dsl = tables.Column(verbose_name="Days Since Logn",
+        accessor=A('dsl'),
     )
     class Meta:
         model = CustomUser
-        fields = ("username", "u_name", "last_login", "update_user", "change_password")
+        fields = ("username", "u_name", "last_login", "dsl", "update_user", "change_password")
         template_name = "tables.html"
