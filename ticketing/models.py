@@ -164,6 +164,12 @@ class UsersTable(tables.Table):
         accessor=A('dsl'),
     )
 
+    def order_dsl(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            dsl_sort=Lower('last_login')
+        ).order_by(("-" if is_descending else "") + "last_login")
+        return (queryset, True)
+
     class Meta:
         model = CustomUser
         fields = ("username", "u_name", "last_login", "dsl", "update_user", "change_password")
