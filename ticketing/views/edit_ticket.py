@@ -59,8 +59,18 @@ def ticket_detail(request, pk):
 
                 if ticket.t_status.name == "Closed":
                     ticket.t_closed = timezone.now()
+                    ticket.days_opened = ticket.t_closed - ticket.t_opened
+                    ticket.days_opened = str(ticket.days_opened).split('.', 1)
+                    ticket.days_opened = ticket.days_opened[0]
 
                 ticket.save()
+                messages.success(
+                    request,
+                    "<strong>Success!</strong> Ticket <a class='text-dark' href='ticket_detail/{0}'><strong><u>#{0}</u></strong></a> Has Been Updated!".format(
+                        ticket.pk
+                    ),
+                    extra_tags="safe",
+                )
                 return redirect("ticketing_index")
         else:
             # print("WE HIT AN ERROR SAVING THE TICKET!!!!!", file=sys.stderr)

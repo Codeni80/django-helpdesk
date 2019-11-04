@@ -2,6 +2,7 @@ from django.db import models
 import django_tables2 as tables
 from django_tables2.utils import A
 from django.contrib.auth.models import AbstractUser
+from django.db.models import F
 from django.db.models.functions import Lower
 from django.utils import timezone
 
@@ -33,6 +34,18 @@ class Ticket(models.Model):
         null=True,
         blank=True,
     )
+    days_opened = models.TextField(verbose_name="Days Open", 
+        null=True, blank=True,
+    )
+
+    # def daysOpen(self):
+    #     days_open = self.t_closed - self.t_opened
+    #     days_open = str(days_open)
+    #     days_open = days_open.split('.', 1)
+    #     days_open = days_open[0].replace(":", "h ", 1)
+    #     days_open = days_open[0].replace(":", "m ", 1)
+
+    #     return(days_open)
 
     def __str__(self):
         return self.t_subject
@@ -60,6 +73,11 @@ class TicketTable(tables.Table):
         attrs={"a": {"style": "color:black"}},
     )
     t_subject = tables.Column(verbose_name="Subject", order_by="t_subject_lower")
+
+    def order_days_open(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            days_open_sorted = F('t_closed') - F('t_opened')
+        )
 
     def order_t_category(self, queryset, is_descending):
         queryset = queryset.annotate(
@@ -91,6 +109,7 @@ class TicketTable(tables.Table):
         ).order_by(("-" if is_descending else "") + "t_subject_lower")
         return (queryset, True)
 
+
     class Meta:
         model = Ticket
         fields = (
@@ -102,6 +121,7 @@ class TicketTable(tables.Table):
             "t_category",
             "t_closed",
             "pk",
+            'days_opened'
         )
         template_name = "tables.html"
 

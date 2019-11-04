@@ -45,6 +45,10 @@ def new_ticket(request):
                     # We set the current time to ticket.t_closed
                     # Only if t_status is set to closed
                     ticket.t_closed = timezone.now()
+                    ticket.days_opened = ticket.t_closed - ticket.t_opened
+                    ticket.days_opened = str(ticket.days_opened).split('.', 1)
+                    ticket.days_opened = ticket.days_opened[0]
+                    print(ticket.days_opened, file=sys.stderr)
 
                 ticket.save()
                 queryset = Ticket.objects.all()
