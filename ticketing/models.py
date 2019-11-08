@@ -194,3 +194,12 @@ class UsersTable(tables.Table):
         model = CustomUser
         fields = ("username", "u_name", "last_login", "dsl", "update_user", "change_password")
         template_name = "tables.html"
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(
+        "CustomUser", on_delete=models.CASCADE, verbose_name="Author"
+    )
+    body = models.TextField(verbose_name="Body")
+    created_on = models.DateTimeField(auto_now_add=True)
+    ticket = models.ForeignKey("Ticket", on_delete=models.CASCADE)

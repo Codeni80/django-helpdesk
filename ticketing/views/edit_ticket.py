@@ -1,5 +1,5 @@
-from ticketing.models import Ticket, Category, Status, TicketTable, CustomUser
-from ticketing.forms import CustomUserCreationForm, TicketForm, EditTicketForm
+from ticketing.models import Ticket, Comment, Category, Status, TicketTable, CustomUser
+from ticketing.forms import CustomUserCreationForm, CommentForm, TicketForm, EditTicketForm
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django_tables2 import RequestConfig
@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
 from django.utils import timezone
+from django.http import HttpResponseRedirect
 from django.db.models.functions import Lower
 import sys
 
@@ -35,6 +36,8 @@ def ticket_detail(request, pk):
 
         context = {"ticket": ticket}
         if request.method == "POST":
+            c_form = CommentForm(request.POST)
+            c_form.author = current_user
             form = EditTicketForm(
                 request.POST,
                 t_status=t_status,
@@ -47,6 +50,16 @@ def ticket_detail(request, pk):
             status = Status.objects.filter(name=form.t_status)
             ticket.status = status
             print("Ticket.status: {0}".format(ticket.status), file=sys.stderr)
+            print("C_FORM: {}".format(c_form.is_valid()), file=sys.stderr)
+            if c_form.is_valid():
+                comment = Comment(
+                    author=current_user,
+                    body=c_form.cleaned_data["body"],
+                    ticket=ticket
+                )
+                print("TICKET: {}".format(ticket), file=sys.stderr)
+                comment.save()
+                return HttpResponseRedirect('/ticket_detail/{}'.format(ticket.pk))
             if form.is_valid():
                 ticket = form.save(commit=False)
                 ticket.pk = updating_pk
@@ -82,8 +95,13 @@ def ticket_detail(request, pk):
                 t_category=t_category,
                 category_choices=category_choices,
             )
-
-        context = {"form": form}
+            c_form = CommentForm()
+        comments = Comment.objects.filter(ticket=ticket)
+        context = {
+            "form": form,
+            "c_form": c_form,
+            "comments": comments
+        }
 
         # return render(request, 'edit_ticket.html', context)
         return render(request, "ticket_detail.html", context)

@@ -30,4 +30,24 @@
         </table>
 
     </form>
+    <h3>Ticket Updates:</h3>
+    {% for comment in comments %}
+        <p>
+            On {{ comment.created_on.date }}&nbsp;
+            <b>{{ comment.author }}</b> Wrote:
+        </p>
+        <p>{{ comment.body }}</p>
+        <hr>
+    {% endfor %}
+    <h3>Post Update to Ticket:</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ c_form.author }}
+        </div>
+        <div class="form-group">
+            {{ c_form.body }}
+        </div>
+        <button type="submit">Post</button>
+    </form>
 {% endblock %}

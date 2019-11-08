@@ -228,3 +228,17 @@ class PasswordChange(forms.Form):
 
     class Meta:
         fields = ("old_password", "new_password", "confirm_password")
+
+
+class CommentForm(forms.Form):
+    author = forms.CharField(
+        max_length=255,
+        widget=forms.HiddenInput(),
+        required=False
+    )
+    body = forms.CharField(widget=forms.Textarea(
+        attrs={
+            "class": "form-control",
+            "placeholder": "Update Comment"
+        })
+    )
