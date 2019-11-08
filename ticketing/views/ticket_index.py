@@ -158,9 +158,8 @@ def active_tickets_helper(current_user, perms, sort_by, filter_by):
     else:
         # Non-technicians only see tickets made by/for them.
         queryset = Ticket.objects.filter(
-            c_info__username=current_user.username,
-           t_status__name__contains=filter_by
-        ).order_by(sort_by)
+            c_info__username=current_user.username
+        ).exclude(t_status__name__contains='Closed').order_by(sort_by)
     return queryset
 
 
