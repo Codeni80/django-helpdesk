@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser, Ticket, Category, Status
+from .models import CustomUser, Ticket, Category, Status, Comment
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 import sys
@@ -230,7 +230,7 @@ class PasswordChange(forms.Form):
         fields = ("old_password", "new_password", "confirm_password")
 
 
-class CommentForm(forms.Form):
+class CommentForm(forms.ModelForm):
     author = forms.CharField(
         max_length=255,
         widget=forms.HiddenInput(),
@@ -242,3 +242,11 @@ class CommentForm(forms.Form):
             "placeholder": "Update Comment"
         })
     )
+    is_private = forms.BooleanField(required=False, 
+        initial=False,
+        label="Private Comment"
+    )
+
+    class Meta:
+        model = Comment
+        fields = ('body', 'is_private')

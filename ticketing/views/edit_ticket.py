@@ -53,9 +53,10 @@ def ticket_detail(request, pk):
             print("C_FORM: {}".format(c_form.is_valid()), file=sys.stderr)
             if c_form.is_valid():
                 comment = Comment(
-                    author=current_user,
-                    body=c_form.cleaned_data["body"],
-                    ticket=ticket
+                    author = current_user,
+                    body = c_form.cleaned_data["body"],
+                    ticket = ticket,
+                    is_private = c_form.cleaned_data["is_private"]
                 )
                 print("TICKET: {}".format(ticket), file=sys.stderr)
                 comment.save()
@@ -96,7 +97,10 @@ def ticket_detail(request, pk):
                 category_choices=category_choices,
             )
             c_form = CommentForm()
-        comments = Comment.objects.filter(ticket=ticket)
+        if current_user.u_permission_level == "2":
+            comments = Comment.objects.filter(ticket=ticket)
+        else:
+            comments = Comment.objects.filter(ticket=ticket, is_private=False)
         context = {
             "form": form,
             "c_form": c_form,

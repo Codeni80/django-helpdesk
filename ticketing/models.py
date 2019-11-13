@@ -203,3 +203,4 @@ class Comment(models.Model):
     body = models.TextField(verbose_name="Body")
     created_on = models.DateTimeField(auto_now_add=True)
     ticket = models.ForeignKey("Ticket", on_delete=models.CASCADE)
+    is_private = models.BooleanField(verbose_name="Private Comment", default=False)

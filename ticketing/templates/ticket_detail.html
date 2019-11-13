@@ -32,22 +32,46 @@
     </form>
     <h3>Ticket Updates:</h3>
     {% for comment in comments %}
-        <p>
-            On {{ comment.created_on.date }}&nbsp;
-            <b>{{ comment.author }}</b> Wrote:
-        </p>
-        <p>{{ comment.body }}</p>
+        {% if comment.is_private == False %}
+            <div>
+        {% else %}
+            <div style="color:red">
+        {% endif %}
+                <p>
+                    On {{ comment.created_on.date }}&nbsp;
+                    <b>{{ comment.author }}</b> Wrote:
+                </p>
+                <p>{{ comment.body }}</p>
+            </div>
         <hr>
     {% endfor %}
     <h3>Post Update to Ticket:</h3>
     <form method="POST">
         {% csrf_token %}
+
+        <table style="width:100%">
+            {% if user.u_permission_level == '2' %} 
+            <tr>
+                <th>Private Comment: {{ c_form.is_private }}</th>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>{{ c_form.body }}</th>
+            </tr>
+            <tr>
+                <th><button type="submit" style="float: right;">Post</button></th>
+            </tr>
+        </table>
+
+        {% comment %} <div class="form-group">
+            <p>Private Comment? {{ c_form.is_private }}</p>
+        </div>
         <div class="form-group">
             {{ c_form.author }}
         </div>
         <div class="form-group">
             {{ c_form.body }}
         </div>
-        <button type="submit">Post</button>
+        <button type="submit">Post</button> {% endcomment %}
     </form>
 {% endblock %}
