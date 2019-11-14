@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from ticketing.models import CustomUser
-from ticketing.forms import CustomUserCreationForm, TicketForm, EditTicketForm
+from ticketing.forms import TicketTypeForm, CustomUserCreationForm, TicketForm, EditTicketForm
 from django.forms import ModelForm
 from django.utils import timezone
 from django.db.models.functions import Lower
@@ -26,15 +26,17 @@ def new_ticket(request):
         perm_level = user_obj.u_permission_level
         user = user_obj.u_name
         c_choices = CustomUser.objects.all()
-
+        t_type = request.GET['type']
+        print(t_type, file=sys.stderr)
         if request.method == "POST":
-            form = TicketForm(
-                request.POST,
-                t_choices=techs,
-                perm_level=perm_level,
-                u_name=user_obj,
-                c_choices=c_choices,
-            )
+            if t_type == 'Dynamics' or t_type == 'Email' or t_type == 'General Computer Issue' or t_type == 'Microsoft Office' or t_type == 'Majestic' or t_type == 'Other' or t_type == 'Smart Card':
+                form = TicketForm(
+                    request.POST,
+                    t_choices=techs,
+                    perm_level=perm_level,
+                    u_name=user_obj,
+                    c_choices=c_choices,
+                )
             if form.is_valid():
                 ticket = form.save(commit=False)
                 ticket.timestamp = timezone.now()
@@ -63,13 +65,30 @@ def new_ticket(request):
                 )
                 return redirect("ticketing_index")
         else:
-            form = TicketForm(
-                t_choices=techs,
-                perm_level=perm_level,
-                u_name=user_obj,
-                c_choices=c_choices,
-            )
+            if t_type == 'Dynamics' or t_type == 'Email' or t_type == 'General Computer Issue' or t_type == 'Microsoft Office' or t_type == 'Majestic' or t_type == 'Other' or t_type == 'Smart Card':
+                form = TicketForm(
+                    t_choices=techs,
+                    perm_level=perm_level,
+                    u_name=user_obj,
+                    c_choices=c_choices,
+                )
 
         context = {"form": form}
 
         return render(request, "new_ticket.html", context)
+
+
+def ticket_type(request):
+    if request.user.force_change == True:
+        return redirect("change_password")
+    else:
+        if request.method == "POST":
+            form = TicketTypeForm(request.POST)
+            if form.is_valid():
+                t_type = form.cleaned_data['t_type']
+                context = {'t_type': t_type}
+                return redirect("/new_ticket/?type={}".format(t_type))
+        else:
+            form = TicketTypeForm()
+        context = {"form": form}
+        return render(request, "ticket_type.html", context)

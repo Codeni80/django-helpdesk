@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block page_content %}
+    <form method='POST'>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <h3>Type of Ticket:</h3>
+        <table>
+            {% for field in form.visible_fields %}
+                <tr>
+                    <td>
+                        {{ field }}
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td>
+                    <button type="submit" style="float: right;">Continue</button>
+                </td>
+            </tr>
+        </table>
+        
+    </form>
+{% endblock %}

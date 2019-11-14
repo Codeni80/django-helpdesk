@@ -10,9 +10,6 @@
             {% for field in form.visible_fields %}
                 {{ field }}
             {% endfor %}
-            {% comment %} {% for choice in form.filter.field.choices %}
-                {{ choice }}
-            {% endfor %} {% endcomment %}
             {% for message in messages %}
                 <div class="alert alert-success alert-dismissible text-center alert-area hide alert-message" role="alert">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close"><span aria-hidden="true">&times;</span></a>

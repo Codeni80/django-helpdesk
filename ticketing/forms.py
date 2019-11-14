@@ -250,3 +250,15 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('body', 'is_private')
+
+
+class TicketTypeForm(forms.Form):
+    # CHOICES = [('NewStaff', 'New Staff'), ('Training', 'Training'), ('RoomSetup', 'Room Setup')]
+    queryset = Category.objects.all()
+    
+    t_type = forms.ModelChoiceField(queryset=queryset,
+        empty_label=None,
+        widget=forms.RadioSelect(attrs={'class':'radioselect'}))
+    
+    class Meta:
+        fields = ('t_type')
