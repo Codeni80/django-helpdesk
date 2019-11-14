@@ -37,6 +37,7 @@ class Ticket(models.Model):
     days_opened = models.TextField(verbose_name="Days Open", 
         null=True, blank=True,
     )
+    equip = models.ForeignKey('EquipmentSetup', on_delete=models.CASCADE)
 
     # def daysOpen(self):
     #     days_open = self.t_closed - self.t_opened
@@ -204,3 +205,18 @@ class Comment(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     ticket = models.ForeignKey("Ticket", on_delete=models.CASCADE)
     is_private = models.BooleanField(verbose_name="Private Comment", default=False)
+
+class EquipmentSetup(models.Model):
+    room = models.ForeignKey("Rooms", on_delete=models.CASCADE)
+    date = models.DateField(verbose_name='Date of Event')
+    start_time = models.TimeField(verbose_name='Time of Event')
+    end_time = models.TimeField(verbose_name='Approx End of Event')
+    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
+
+
+class Rooms(models.Model):
+    room = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.room
+    

@@ -10,8 +10,29 @@
             {{ hidden_field }}
         {% endfor %}
 
+        {% for message in messages %}
+            <div class="alert alert-error alert-dismissible text-center alert-area hide alert-message" role="alert">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close"><span aria-hidden="true">&times;</span></a>
+                {% if 'safe' in message.tags %}
+                    {{ message|safe }}
+                {% else %}
+                    {{ message }}
+                {% endif %}
+            </div>
+        {% endfor %}
+
         <table>
             {% for field in form.visible_fields %}
+                <tr>
+                    <th style="text-align: right">{{ field.label_tag }}</th>
+                    <td>
+                        {{ field.errors }}
+                        {{ field }}
+                        {{ field.help_text }}
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for field in sec_form.visible_fields %}
                 <tr>
                     <th style="text-align: right">{{ field.label_tag }}</th>
                     <td>

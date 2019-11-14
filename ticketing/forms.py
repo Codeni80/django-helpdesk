@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser, Ticket, Category, Status, Comment
+from .models import EquipmentSetup, CustomUser, Ticket, Category, Status, Comment, Rooms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 import sys
@@ -262,3 +262,20 @@ class TicketTypeForm(forms.Form):
     
     class Meta:
         fields = ('t_type')
+
+
+class EquipRoomForm(forms.ModelForm):
+    queryset = Rooms.objects.all()
+    cust = CustomUser.objects.all()
+
+    room = forms.ModelChoiceField(queryset=queryset)
+    date = forms.DateField(
+        input_formats=['%d/%m/%Y'],
+        widget=forms.DateInput()
+    )
+    start_time = forms.TimeField(input_formats=['%H:%M'])
+    end_time = forms.TimeField(input_formats=['%H:%M'])
+
+    class Meta:
+        model = EquipmentSetup
+        fields = ('room', 'date', 'start_time', 'end_time')

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ticketing.models import Ticket, Category, Status, CustomUser, Comment
+from ticketing.models import EquipmentSetup, Ticket, Category, Status, CustomUser, Comment, Rooms
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import get_user_model
 from .forms import CustomUserChangeForm, CustomUserCreationForm
@@ -41,3 +41,5 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Status, StatusAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Comment)
+admin.site.register(Rooms)
+admin.site.register(EquipmentSetup)
