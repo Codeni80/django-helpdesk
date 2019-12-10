@@ -21,6 +21,16 @@
                     </td>
                 </tr>
             {% endfor %}
+            {% for field in extra_form.visible_fields %}
+                <tr>
+                    <th>{{ field.label_tag }}
+                    <td>
+                        {{ field.errors }}
+                        {{ field }}
+                        {{ field.help_text }}
+                    </td>
+                </tr>
+            {% endfor %}
             <tr>
                 <td></td>
                 <td>

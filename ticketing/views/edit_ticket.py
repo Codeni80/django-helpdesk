@@ -1,5 +1,5 @@
-from ticketing.models import Ticket, Comment, Category, Status, TicketTable, CustomUser
-from ticketing.forms import CustomUserCreationForm, CommentForm, TicketForm, EditTicketForm
+from ticketing.models import EquipmentSetup, Rooms, Ticket, Comment, Category, Status, TicketTable, CustomUser
+from ticketing.forms import EditEquipRoomForm, CustomUserCreationForm, CommentForm, TicketForm, EditTicketForm
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django_tables2 import RequestConfig
@@ -31,8 +31,16 @@ def ticket_detail(request, pk):
         t_body = ticket.t_body
         t_status = ticket.t_status
         category_choices = Category.objects.all()
-
         t_category = ticket.t_category.pk
+        t_cat = ticket.t_category
+
+        if str(ticket.t_category) == 'Equipment or Room Setup':
+            EQSetup = EquipmentSetup.objects.get(ticket=ticket)
+            room = EQSetup.room
+            date = EQSetup.date
+            start_time = EQSetup.start_time
+            end_time = EQSetup.end_time
+            update_pk = EQSetup.pk
 
         context = {"ticket": ticket}
         if request.method == "POST":
@@ -47,6 +55,23 @@ def ticket_detail(request, pk):
                 t_category=t_category,
                 category_choices=category_choices,
             )
+            if str(t_cat) == 'Equipment or Room Setup':
+                extra_form = EditEquipRoomForm(
+                    request.POST,
+                    room=room,
+                    date=date,
+                    start_time=start_time,
+                    end_time=end_time
+                )
+                if extra_form.is_valid():
+                    EQSetup = extra_form.save(commit=False)
+                    EQSetup.pk = update_pk
+                    EQSetup.room = extra_form.cleaned_data['room']
+                    EQSetup.date = extra_form.cleaned_data['date']
+                    EQSetup.start_time = extra_form.cleaned_data['start_time']
+                    EQSetup.end_time = extra_form.cleaned_data['end_time']
+                    EQSetup.ticket = ticket
+                    EQSetup.save()
             status = Status.objects.filter(name=form.t_status)
             ticket.status = status
             print("Ticket.status: {0}".format(ticket.status), file=sys.stderr)
@@ -87,7 +112,14 @@ def ticket_detail(request, pk):
                 )
                 return redirect("ticketing_index")
         else:
-            # print("WE HIT AN ERROR SAVING THE TICKET!!!!!", file=sys.stderr)
+            if str(t_cat) == 'Equipment or Room Setup':
+                print("TRUE", file=sys.stderr)
+                extra_form = EditEquipRoomForm(
+                    room=room,
+                    date=date,
+                    start_time=start_time,
+                    end_time=end_time
+                )
             form = EditTicketForm(
                 t_status=t_status,
                 status_choices=status_choices,
@@ -101,11 +133,20 @@ def ticket_detail(request, pk):
             comments = Comment.objects.filter(ticket=ticket)
         else:
             comments = Comment.objects.filter(ticket=ticket, is_private=False)
-        context = {
-            "form": form,
-            "c_form": c_form,
-            "comments": comments
-        }
+        
+        if str(t_cat) == 'Equipment or Room Setup':
+            context = {
+                "form": form,
+                "extra_form": extra_form,
+                "c_form": c_form,
+                "comments": comments
+            }
+        else:
+            context = {
+                "form": form,
+                "c_form": c_form,
+                "comments": comments
+            }
 
         # return render(request, 'edit_ticket.html', context)
         return render(request, "ticket_detail.html", context)

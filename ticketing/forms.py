@@ -83,7 +83,7 @@ class TicketForm(forms.ModelForm):
         self.fields["t_status"].widget.attrs["style"] = "width:400px;"
         self.fields["t_subject"].widget.attrs["style"] = "width:400px;"
         self.fields["t_body"].widget.attrs["style"] = "width:400px; height:150px"
-        self.fields["t_category"].widget.attrs["style"] = "width:400px;"
+        # self.fields["t_category"].widget.attrs["style"] = "width:400px;"
         self.fields["c_info"].widget.attrs["style"] = "width:400px;"
         self.fields["t_assigned"].widget.attrs["style"] = "width:400px;"
 
@@ -93,7 +93,7 @@ class TicketForm(forms.ModelForm):
             "t_status",
             "t_subject",
             "t_body",
-            "t_category",
+            # "t_category",
             "c_info",
             "t_assigned",
         )
@@ -269,12 +269,34 @@ class EquipRoomForm(forms.ModelForm):
     cust = CustomUser.objects.all()
 
     room = forms.ModelChoiceField(queryset=queryset)
-    date = forms.DateField(
-        input_formats=['%d/%m/%Y'],
-        widget=forms.DateInput()
-    )
-    start_time = forms.TimeField(input_formats=['%H:%M'])
-    end_time = forms.TimeField(input_formats=['%H:%M'])
+    date = forms.TextInput()
+    start_time = forms.TextInput()
+    end_time = forms.TextInput()
+
+    class Meta:
+        model = EquipmentSetup
+        fields = ('room', 'date', 'start_time', 'end_time')
+
+class EditEquipRoomForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.e_room = kwargs.pop('room')
+        self.e_date = kwargs.pop('date')
+        self.e_start_time = kwargs.pop('start_time')
+        self.e_end_time = kwargs.pop('end_time')
+        super(EditEquipRoomForm, self).__init__(*args, **kwargs)
+        self.default_rm = Rooms.objects.get(room=self.e_room)
+        self.queryset = Rooms.objects.all()
+        self.fields['room'].queryset = self.queryset
+        self.fields['room'].initial = self.default_rm
+        self.fields['date'].initial = self.e_date
+        self.fields['start_time'].initial = self.e_start_time
+        self.fields['end_time'].initial = self.e_end_time
+    
+
+    # room = forms.ModelChoiceField(queryset=queryset)
+    # date = forms.TextInput()
+    # start_time = forms.TextInput()
+    # end_time = forms.TextInput()
 
     class Meta:
         model = EquipmentSetup

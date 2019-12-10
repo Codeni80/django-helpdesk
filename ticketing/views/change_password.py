@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate, get_user_model
+from django.contrib.auth import login, authenticate, get_user_model, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm
 from ticketing.models import CustomUser, UsersTable
 from ticketing.forms import (
@@ -37,6 +37,7 @@ def change_password(request):
                     request.user.password = password
                     request.user.force_change = False
                     request.user.save()
+                    update_session_auth_hash(request, request.user)
                     return redirect("/")
                 else:
                     messages.error(request, "Passwords Do Not Match!")

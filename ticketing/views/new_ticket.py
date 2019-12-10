@@ -6,7 +6,7 @@ import sys
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from ticketing.models import CustomUser
+from ticketing.models import CustomUser, EquipmentSetup
 from ticketing.forms import EquipRoomForm, TicketTypeForm, CustomUserCreationForm, TicketForm, EditTicketForm
 from django.forms import ModelForm
 from django.utils import timezone
@@ -30,6 +30,10 @@ def new_ticket(request):
         print(t_type, file=sys.stderr)
         if request.method == "POST":
             if t_type == 'Dynamics' or t_type == 'Email' or t_type == 'General Computer Issue' or t_type == 'Microsoft Office' or t_type == 'Majestic' or t_type == 'Other' or t_type == 'Smart Card':
+                t_type = Category.objects.filter(name=t_type)
+                for t in t_type:
+                    result = t
+                t_type = result
                 form = TicketForm(
                     request.POST,
                     t_choices=techs,
@@ -38,6 +42,10 @@ def new_ticket(request):
                     c_choices=c_choices,
                 )
             elif t_type == 'Equipment or Room Setup':
+                t_type = Category.objects.filter(name=t_type)
+                for t in t_type:
+                    result = t
+                t_type = result
                 form = TicketForm(
                     request.POST,
                     t_choices=techs,
@@ -45,9 +53,10 @@ def new_ticket(request):
                     u_name=user_obj,
                     c_choices=c_choices,
                 )
-                sec_form = EquipRoomForm()
-            if form.is_valid() and sec_form.is_valid():
+                sec_form = EquipRoomForm(request.POST)
+            if form.is_valid():
                 ticket = form.save(commit=False)
+                ticket.t_category = t_type
                 ticket.timestamp = timezone.now()
                 ticket.t_opened = timezone.now()
                 ticket.t_subject = ticket.t_subject.capitalize()
@@ -60,9 +69,20 @@ def new_ticket(request):
                     ticket.days_opened = str(ticket.days_opened).split('.', 1)
                     ticket.days_opened = ticket.days_opened[0]
                     print(ticket.days_opened, file=sys.stderr)
-
+                
                 ticket.save()
-                queryset = Ticket.objects.all()
+                ticket = Ticket.objects.get(pk=ticket.pk)
+                print("TICKET: {}".format(ticket.pk), file=sys.stderr)
+                
+            if sec_form.is_valid():
+                equipmentsetup = EquipmentSetup(
+                    room = sec_form.cleaned_data['room'],
+                    date = sec_form.cleaned_data['date'],
+                    start_time = sec_form.cleaned_data['start_time'],
+                    end_time = sec_form.cleaned_data['end_time'],
+                    ticket = ticket
+                )
+                equipmentsetup.save()
 
                 # return redirect("ticket_detail", pk=ticket.pk)
                 messages.success(
@@ -74,7 +94,7 @@ def new_ticket(request):
                 )
                 return redirect("ticketing_index")
             else:
-                messages.error(request, 'Welp, that didn\'t work...')
+                messages.error(request, 'Error: {}'.format(sec_form.is_valid()))
         else:
             if t_type == 'Dynamics' or t_type == 'Email' or t_type == 'General Computer Issue' or t_type == 'Microsoft Office' or t_type == 'Majestic' or t_type == 'Other' or t_type == 'Smart Card':
                 form = TicketForm(

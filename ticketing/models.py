@@ -37,7 +37,7 @@ class Ticket(models.Model):
     days_opened = models.TextField(verbose_name="Days Open", 
         null=True, blank=True,
     )
-    equip = models.ForeignKey('EquipmentSetup', on_delete=models.CASCADE)
+    # equip = models.ForeignKey('EquipmentSetup', on_delete=models.CASCADE)
 
     # def daysOpen(self):
     #     days_open = self.t_closed - self.t_opened
@@ -208,10 +208,10 @@ class Comment(models.Model):
 
 class EquipmentSetup(models.Model):
     room = models.ForeignKey("Rooms", on_delete=models.CASCADE)
-    date = models.DateField(verbose_name='Date of Event')
-    start_time = models.TimeField(verbose_name='Time of Event')
-    end_time = models.TimeField(verbose_name='Approx End of Event')
-    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
+    date = models.TextField(verbose_name='Date of Event')
+    start_time = models.TextField(verbose_name='Time of Event')
+    end_time = models.TextField(verbose_name='Approx End of Event')
+    ticket = models.ForeignKey("Ticket", on_delete=models.CASCADE)
 
 
 class Rooms(models.Model):
