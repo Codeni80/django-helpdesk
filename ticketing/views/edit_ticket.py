@@ -72,6 +72,24 @@ def ticket_detail(request, pk):
                     EQSetup.end_time = extra_form.cleaned_data['end_time']
                     EQSetup.ticket = ticket
                     EQSetup.save()
+            if str(t_cat) == 'Laptop Checkout':
+                pass
+                #Stuff goes here
+            if str(t_cat) == 'New Staff':
+                pass
+                #Stuff goes here
+            if str(t_cat) == 'Password Reset':
+                pass
+                #Stuff goes here
+            if str(t_cat) == 'Training':
+                pass
+                #Stuff goes here
+            # if str(t_cat) == 'Majestic':
+            #     #Stuff goes here
+            if str(t_cat) == 'Phone':
+                pass
+                #Stuff goes here
+
             status = Status.objects.filter(name=form.t_status)
             ticket.status = status
             print("Ticket.status: {0}".format(ticket.status), file=sys.stderr)
@@ -120,6 +138,24 @@ def ticket_detail(request, pk):
                     start_time=start_time,
                     end_time=end_time
                 )
+            if str(t_cat) == 'Laptop Checkout':
+                pass
+                #Stuff goes here
+            if str(t_cat) == 'New Staff':
+                pass
+                #Stuff goes here
+            if str(t_cat) == 'Password Reset':
+                pass
+                #Stuff goes here
+            if str(t_cat) == 'Training':
+                pass
+                #Stuff goes here
+            if str(t_cat) == 'Majestic':
+                pass
+                #Stuff goes here
+            if str(t_cat) == 'Phone':
+                pass
+                #Stuff goes here
             form = EditTicketForm(
                 t_status=t_status,
                 status_choices=status_choices,

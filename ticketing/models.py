@@ -219,4 +219,34 @@ class Rooms(models.Model):
 
     def __str__(self):
         return self.room
+
+
+class LaptopCheckout(models.Model):
+    date = models.DateField()
+    start_time = models.TimeField()
+    return_time = models.TimeField()
+    reason = models.TextField(verbose_name='Reason')
+
+
+class NewStaff(models.Model):
+    name = models.CharField(verbose_name='Name', max_length=255)
+    start_date = models.DateField()
+    position = models.CharField(max_length=255)
+
+class PasswordReset(models.Model):
+    name = models.ForeignKey('System', on_delete=models.CASCADE)
+
+class System(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class Training(models.Model):
+    training_type = models.ForeignKey('TrainingType', on_delete=models.CASCADE)
+
+class TrainingType(models.Model):
+    name = models.CharField(max_length=255)
     
+    def __str__(self):
+        return self.name

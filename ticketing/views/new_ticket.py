@@ -29,31 +29,17 @@ def new_ticket(request):
         t_type = request.GET['type']
         print(t_type, file=sys.stderr)
         if request.method == "POST":
-            if t_type == 'Dynamics' or t_type == 'Email' or t_type == 'General Computer Issue' or t_type == 'Microsoft Office' or t_type == 'Majestic' or t_type == 'Other' or t_type == 'Smart Card':
-                t_type = Category.objects.filter(name=t_type)
-                for t in t_type:
-                    result = t
-                t_type = result
-                form = TicketForm(
-                    request.POST,
-                    t_choices=techs,
-                    perm_level=perm_level,
-                    u_name=user_obj,
-                    c_choices=c_choices,
-                )
-            elif t_type == 'Equipment or Room Setup':
-                t_type = Category.objects.filter(name=t_type)
-                for t in t_type:
-                    result = t
-                t_type = result
-                form = TicketForm(
-                    request.POST,
-                    t_choices=techs,
-                    perm_level=perm_level,
-                    u_name=user_obj,
-                    c_choices=c_choices,
-                )
-                sec_form = EquipRoomForm(request.POST)
+            t_type = Category.objects.filter(name=t_type)
+            for t in t_type:
+                result = t
+            t_type = result
+            form = TicketForm(
+                request.POST,
+                t_choices=techs,
+                perm_level=perm_level,
+                u_name=user_obj,
+                c_choices=c_choices,
+            )
             if form.is_valid():
                 ticket = form.save(commit=False)
                 ticket.t_category = t_type
@@ -72,19 +58,35 @@ def new_ticket(request):
                 
                 ticket.save()
                 ticket = Ticket.objects.get(pk=ticket.pk)
-                print("TICKET: {}".format(ticket.pk), file=sys.stderr)
                 
-            if sec_form.is_valid():
-                equipmentsetup = EquipmentSetup(
-                    room = sec_form.cleaned_data['room'],
-                    date = sec_form.cleaned_data['date'],
-                    start_time = sec_form.cleaned_data['start_time'],
-                    end_time = sec_form.cleaned_data['end_time'],
-                    ticket = ticket
-                )
-                equipmentsetup.save()
-
-                # return redirect("ticket_detail", pk=ticket.pk)
+                if str(t_type) == 'Equipment or Room Setup':
+                    t_type = Category.objects.filter(name=t_type)
+                    for t in t_type:
+                        result = t
+                    t_type = result
+                    sec_form = EquipRoomForm(request.POST)
+                    if sec_form.is_valid():
+                        equipmentsetup = EquipmentSetup(
+                            room = sec_form.cleaned_data['room'],
+                            date = sec_form.cleaned_data['date'],
+                            start_time = sec_form.cleaned_data['start_time'],
+                            end_time = sec_form.cleaned_data['end_time'],
+                            ticket = ticket
+                        )
+                        equipmentsetup.save()
+                if str(t_type) == 'Laptop Checkout':
+                    pass
+                if str(t_type) == 'New Staff':
+                    pass
+                if str(t_type) == 'Password Reset':
+                    pass
+                if str(t_type) == 'Training':
+                    pass
+                if str(t_type) == 'Majestic':
+                    pass
+                if str(t_type) == 'Phone':
+                    pass
+                    # return redirect("ticket_detail", pk=ticket.pk)
                 messages.success(
                     request,
                     "<strong>Success!</strong> Created Ticket <a class='text-dark' href='ticket_detail/{0}'><strong><u>#{0}</u></strong></a>!".format(
@@ -111,11 +113,11 @@ def new_ticket(request):
                     c_choices=c_choices,
                 )
                 sec_form = EquipRoomForm()
-        if t_type == 'Equipment or Room Setup':
+        if str(t_type) == 'Equipment or Room Setup':
             context = {'form': form, 'sec_form': sec_form}
         else:
             context = {"form": form}
-
+        
         return render(request, "new_ticket.html", context)
 
 
