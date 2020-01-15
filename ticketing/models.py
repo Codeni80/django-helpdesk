@@ -14,7 +14,6 @@ class Ticket(models.Model):
         "Status", on_delete=models.CASCADE, verbose_name="Status"
     )
     t_subject = models.CharField(max_length=100, verbose_name="Subject")
-    t_body = models.TextField(verbose_name="Ticket Summary")
     t_closed = models.DateTimeField(verbose_name="Date Closed", null=True, blank=True)
     t_category = models.ForeignKey(
         "Category", on_delete=models.CASCADE, verbose_name="Category"
@@ -25,7 +24,6 @@ class Ticket(models.Model):
         verbose_name="Customer Name",
         related_name="customer",
     )
-    # t_assigned = models.CharField(max_length=150, verbose_name='Assigned To')
     t_assigned = models.ForeignKey(
         "CustomUser",
         on_delete=models.CASCADE,
@@ -37,16 +35,6 @@ class Ticket(models.Model):
     days_opened = models.TextField(verbose_name="Days Open", 
         null=True, blank=True,
     )
-    # equip = models.ForeignKey('EquipmentSetup', on_delete=models.CASCADE)
-
-    # def daysOpen(self):
-    #     days_open = self.t_closed - self.t_opened
-    #     days_open = str(days_open)
-    #     days_open = days_open.split('.', 1)
-    #     days_open = days_open[0].replace(":", "h ", 1)
-    #     days_open = days_open[0].replace(":", "m ", 1)
-
-    #     return(days_open)
 
     def __str__(self):
         return self.t_subject
@@ -222,31 +210,64 @@ class Rooms(models.Model):
 
 
 class LaptopCheckout(models.Model):
-    date = models.DateField()
-    start_time = models.TimeField()
-    return_time = models.TimeField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
     reason = models.TextField(verbose_name='Reason')
+    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
 
+class Printers(models.Model):
+    problem = models.TextField(verbose_name='Issue With Printer')
+    printer = models.ForeignKey('PrinterList', on_delete=models.CASCADE)
+    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
+
+class PrinterList(models.Model):
+    printer = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.printer
 
 class NewStaff(models.Model):
     name = models.CharField(verbose_name='Name', max_length=255)
-    start_date = models.DateField()
-    position = models.CharField(max_length=255)
+    department = models.CharField(verbose_name='Department', max_length=255)
+    supervisor = models.CharField(verbose_name='Supervisor', max_length=255)
+    empid = models.CharField(verbose_name='Employee ID', max_length=255)
+    start_date = models.DateTimeField()
+    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
 
-class PasswordReset(models.Model):
-    name = models.ForeignKey('System', on_delete=models.CASCADE)
+class Training(models.Model):
+    training_type = models.ForeignKey('TrainingType', on_delete=models.CASCADE)
+    staff_name = models.CharField(verbose_name='Employee Name', max_length=255)
+    location = models.ForeignKey('TrainingLoc', on_delete=models.CASCADE)
+    date = models.DateTimeField(verbose_name='Proposed Date for Training')
+    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
 
-class System(models.Model):
+class TrainingType(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
-class Training(models.Model):
-    training_type = models.ForeignKey('TrainingType', on_delete=models.CASCADE)
+class TrainingLoc(models.Model):
+    locations = models.CharField(max_length=255)
 
-class TrainingType(models.Model):
+    def __str__(self):
+        return self.locations
+
+class PasswordReset(models.Model):
+    name = models.CharField(max_length=255, verbose_name='Staff Name')
+    account = models.ForeignKey('AccountType', on_delete=models.CASCADE)
+    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
+
+class AccountType(models.Model):
     name = models.CharField(max_length=255)
-    
+
+    def __str__(self):
+        return self.name
+
+class DefaultTicket(models.Model):
+    body = models.TextField(verbose_name='Ticket Summary')
+    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
+
+
     def __str__(self):
         return self.name

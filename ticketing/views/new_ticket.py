@@ -19,107 +19,143 @@ def new_ticket(request):
     if request.user.force_change == True:
         return redirect("change_password")
     else:
-        t_choices = [(0, "---------")]
-        techs = get_user_model()
-        techs = techs.objects.filter(u_permission_level=2)
+        t_type = request.GET['type']
         user_obj = request.user
         perm_level = user_obj.u_permission_level
-        user = user_obj.u_name
-        c_choices = CustomUser.objects.all()
-        t_type = request.GET['type']
-        print(t_type, file=sys.stderr)
-        if request.method == "POST":
-            t_type = Category.objects.filter(name=t_type)
-            for t in t_type:
-                result = t
-            t_type = result
-            form = TicketForm(
-                request.POST,
-                t_choices=techs,
-                perm_level=perm_level,
-                u_name=user_obj,
-                c_choices=c_choices,
+        ticket_type = Category.objects.get(name=t_type)
+        tech_group = get_user_model()
+        tech_group = tech_group.objects.filter(u_permission_level = 2)
+        
+        if request.method == 'POST':
+            form = TicketForm(request.POST,
+                perm_level = perm_level,
+                u_name = user_obj,
+                t_choices = tech_group
             )
             if form.is_valid():
                 ticket = form.save(commit=False)
-                ticket.t_category = t_type
+                ticket.t_subject = ticket.t_subject.capitalize()
+                ticket.t_category = ticket_type
                 ticket.timestamp = timezone.now()
                 ticket.t_opened = timezone.now()
-                ticket.t_subject = ticket.t_subject.capitalize()
 
-                if ticket.t_status.name == "Closed":
-                    # We set the current time to ticket.t_closed
-                    # Only if t_status is set to closed
+                if ticket.t_status.name == 'Closed':
                     ticket.t_closed = timezone.now()
                     ticket.days_opened = ticket.t_closed - ticket.t_opened
                     ticket.days_opened = str(ticket.days_opened).split('.', 1)
                     ticket.days_opened = ticket.days_opened[0]
-                    print(ticket.days_opened, file=sys.stderr)
-                
+
                 ticket.save()
-                ticket = Ticket.objects.get(pk=ticket.pk)
-                
-                if str(t_type) == 'Equipment or Room Setup':
-                    t_type = Category.objects.filter(name=t_type)
-                    for t in t_type:
-                        result = t
-                    t_type = result
+                ticket = Ticket.objects.get(pk=tickets.pk)
+
+                if t_type == 'Equipment or Room Setup':
+                    t_type = Category.objects.get(name=t_type)
                     sec_form = EquipRoomForm(request.POST)
                     if sec_form.is_valid():
                         equipmentsetup = EquipmentSetup(
-                            room = sec_form.cleaned_data['room'],
+                            room = sec_form.cleaned_date['room'],
                             date = sec_form.cleaned_data['date'],
                             start_time = sec_form.cleaned_data['start_time'],
                             end_time = sec_form.cleaned_data['end_time'],
                             ticket = ticket
                         )
                         equipmentsetup.save()
-                if str(t_type) == 'Laptop Checkout':
-                    pass
-                if str(t_type) == 'New Staff':
-                    pass
-                if str(t_type) == 'Password Reset':
-                    pass
-                if str(t_type) == 'Training':
-                    pass
-                if str(t_type) == 'Majestic':
-                    pass
-                if str(t_type) == 'Phone':
-                    pass
-                    # return redirect("ticket_detail", pk=ticket.pk)
-                messages.success(
-                    request,
-                    "<strong>Success!</strong> Created Ticket <a class='text-dark' href='ticket_detail/{0}'><strong><u>#{0}</u></strong></a>!".format(
-                        ticket.pk
-                    ),
-                    extra_tags="safe",
-                )
+                elif t_type == 'Laptop Checkout':
+                    t_type = Category.objects.get(name=t_type)
+                    sec_form = LaptopCheckoutForm(request.POST)
+                    if sec_form.is_valid():
+                        laptopcheckout = LaptopCheckout(
+                            reason = sec_form.cleaned_data['reason'],
+                            start_time = sec_form.cleaned_data['start_time'],
+                            end_time = sec_form.cleaned_data['end_time'],
+                            ticket = ticket
+                        )
+                        laptopcheckout.save()
+                elif t_type == 'Printers':
+                    t_type = Category.objects.get(name=t_type)
+                    sec_form = PrintersForm(request.POST)
+                    if sec_form.is_valid():
+                        printers = Printers(
+                            problem = sec_form.cleaned_data['problem'],
+                            printer = sec_form.cleaned_data['printer'],
+                            ticket = ticket
+                        )
+                        printers.save()
+                elif t_type == 'New Staff':
+                    t_type = Category.objects.get(name=t_type)
+                    sec_form = NewStaffForm(request.POST)
+                    if sec_form.is_valid():
+                        newstaff = NewStaff(
+                            name = sec_form.cleaned_data['name'],
+                            department = sec_form.cleaned_data['department'],
+                            supervisor = sec_form.cleaned_data['supervisor'],
+                            empid = sec_form.cleaned_data['empid'],
+                            start_date = sec_form.cleaned_data['start_date'],
+                            ticket = ticket
+                        )
+                        newstaff.save()
+                elif t_type == 'Training':
+                    t_type = Category.objects.get(name=t_type)
+                    sec_form = TrainingForm(request.POST)
+                    if sec_form.is_valid():
+                        training = Training(
+                            training_type = sec_form.cleaned_data['training_type'],
+                            staff_name = sec_form.cleaned_data['staff_name'],
+                            location = sec_form.cleaned_data['location'],
+                            date = sec_form.cleaned_data['date'],
+                            ticket = ticket
+                        )
+                        training.save()
+                elif t_type == 'Password Reset':
+                    t_type = Category.objects.get(name=t_type)
+                    sec_form = PasswordResetForm(request.POST)
+                    if sec_form.is_valid():
+                        passwordreset = PasswordReset(
+                            name = sec_form.cleaned_data['name'],
+                            account = sec_form.cleaned_data['account'],
+                            ticket = ticket
+                        )
+                        passwordreset.save()
+                else:
+                    t_type = Category.objects.get(name=t_type)
+                    sec_form = DefaultTicketForm(request.POST)
+                    if sec_form.is_valid():
+                        defaultticket = DefaultTicket(
+                            body = sec_form.cleaned_data['body'],
+                            ticket = ticket
+                        )
+                        defaultticket.save()
                 return redirect("ticketing_index")
             else:
-                messages.error(request, 'Error: {}'.format(sec_form.is_valid()))
+                messages.error(request, "Error: Form is invalid, please check information entered and try again.")
         else:
-            if t_type == 'Dynamics' or t_type == 'Email' or t_type == 'General Computer Issue' or t_type == 'Microsoft Office' or t_type == 'Majestic' or t_type == 'Other' or t_type == 'Smart Card':
-                form = TicketForm(
-                    t_choices=techs,
-                    perm_level=perm_level,
-                    u_name=user_obj,
-                    c_choices=c_choices,
-                )
-            elif t_type == 'Equipment or Room Setup':
-                form = TicketForm(
-                    t_choices=techs,
-                    perm_level=perm_level,
-                    u_name=user_obj,
-                    c_choices=c_choices,
-                )
+            form = TicketForm(
+                perm_level = perm_level,
+                u_name = user_obj,
+                t_choices = tech_group
+            )
+            if t_type == 'Equipment or Room Setup':
                 sec_form = EquipRoomForm()
-        if str(t_type) == 'Equipment or Room Setup':
-            context = {'form': form, 'sec_form': sec_form}
-        else:
-            context = {"form": form}
-        
-        return render(request, "new_ticket.html", context)
-
+                context = {'form': form, 'sec_form': sec_form}
+            elif t_type == 'Laptop Checkout':
+                sec_form = LaptopCheckoutForm()
+                context = {'form': form, 'sec_form': sec_form}
+            elif t_type == 'Printers':
+                sec_form = PrintersForm()
+                context = {'form': form, 'sec_form': sec_form}
+            elif t_type == 'New Staff':
+                sec_form = NewStaffForm()
+                context = {'form': form, 'sec_form': sec_form}
+            elif t_type == 'Training':
+                sec_form = TrainingForm()
+                context = {'form': form, 'sec_form': sec_form}
+            elif t_type == 'Password Reset':
+                sec_form = PasswordResetForm()
+                context = {'form': form, 'sec_form': sec_form}
+            else:
+                sec_form = DefaultTicketForm()
+                context = {'form': form, 'sec_form': sec_form}
+            return render(request, 'new_ticket.html', context)
 
 def ticket_type(request):
     if request.user.force_change == True:
