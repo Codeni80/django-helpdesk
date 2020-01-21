@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from ticketing.models import Ticket, Category, Status, TicketTable
+from ticketing.models import *
 from django.views.generic import ListView
 from django_tables2 import RequestConfig
 import sys
@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from ticketing.models import CustomUser, EquipmentSetup
-from ticketing.forms import EquipRoomForm, TicketTypeForm, CustomUserCreationForm, TicketForm, EditTicketForm
+from ticketing.forms import *
 from django.forms import ModelForm
 from django.utils import timezone
 from django.db.models.functions import Lower
@@ -27,11 +27,15 @@ def new_ticket(request):
         tech_group = tech_group.objects.filter(u_permission_level = 2)
         
         if request.method == 'POST':
+            flag = 1
             form = TicketForm(request.POST,
                 perm_level = perm_level,
                 u_name = user_obj,
                 t_choices = tech_group
             )
+            if form.is_valid():
+                flag = 0
+
             if form.is_valid():
                 ticket = form.save(commit=False)
                 ticket.t_subject = ticket.t_subject.capitalize()
@@ -46,20 +50,22 @@ def new_ticket(request):
                     ticket.days_opened = ticket.days_opened[0]
 
                 ticket.save()
-                ticket = Ticket.objects.get(pk=tickets.pk)
+                ticket = Ticket.objects.get(pk=ticket.pk)
 
                 if t_type == 'Equipment or Room Setup':
                     t_type = Category.objects.get(name=t_type)
                     sec_form = EquipRoomForm(request.POST)
                     if sec_form.is_valid():
                         equipmentsetup = EquipmentSetup(
-                            room = sec_form.cleaned_date['room'],
+                            room = sec_form.cleaned_data['room'],
                             date = sec_form.cleaned_data['date'],
                             start_time = sec_form.cleaned_data['start_time'],
                             end_time = sec_form.cleaned_data['end_time'],
                             ticket = ticket
                         )
                         equipmentsetup.save()
+                    else:
+                        flag = 1
                 elif t_type == 'Laptop Checkout':
                     t_type = Category.objects.get(name=t_type)
                     sec_form = LaptopCheckoutForm(request.POST)
@@ -71,6 +77,8 @@ def new_ticket(request):
                             ticket = ticket
                         )
                         laptopcheckout.save()
+                    else:
+                        flag = 1
                 elif t_type == 'Printers':
                     t_type = Category.objects.get(name=t_type)
                     sec_form = PrintersForm(request.POST)
@@ -81,6 +89,8 @@ def new_ticket(request):
                             ticket = ticket
                         )
                         printers.save()
+                    else:
+                        flag = 1
                 elif t_type == 'New Staff':
                     t_type = Category.objects.get(name=t_type)
                     sec_form = NewStaffForm(request.POST)
@@ -94,6 +104,8 @@ def new_ticket(request):
                             ticket = ticket
                         )
                         newstaff.save()
+                    else:
+                        flag = 1
                 elif t_type == 'Training':
                     t_type = Category.objects.get(name=t_type)
                     sec_form = TrainingForm(request.POST)
@@ -106,6 +118,8 @@ def new_ticket(request):
                             ticket = ticket
                         )
                         training.save()
+                    else:
+                        flag = 1
                 elif t_type == 'Password Reset':
                     t_type = Category.objects.get(name=t_type)
                     sec_form = PasswordResetForm(request.POST)
@@ -116,6 +130,8 @@ def new_ticket(request):
                             ticket = ticket
                         )
                         passwordreset.save()
+                    else:
+                        flag = 1
                 else:
                     t_type = Category.objects.get(name=t_type)
                     sec_form = DefaultTicketForm(request.POST)
@@ -125,7 +141,14 @@ def new_ticket(request):
                             ticket = ticket
                         )
                         defaultticket.save()
-                return redirect("ticketing_index")
+                    else:
+                        flag = 1
+                if flag == 0:
+                    return redirect("ticketing_index")
+                else:
+                    ticket.delete()
+                    messages.error(request, "Error: Form is invalid, please check information entered and try again.")
+                    return redirect(request.META['HTTP_REFERER'])
             else:
                 messages.error(request, "Error: Form is invalid, please check information entered and try again.")
         else:
