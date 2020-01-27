@@ -20,6 +20,12 @@
             </div>
         {% endfor %}
         <table>
+            <tr>
+                <td></td>
+                <td>
+                    <button><a href={% url 'register' %} style='color:black;text-decoration: none;'>Creat New User</a></button>
+                </td>
+            </tr>
             {% for field in form.visible_fields %}
                 <tr>
                     <th style="text-align:right">{{ field.label_tag }}</th>

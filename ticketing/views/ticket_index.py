@@ -49,6 +49,7 @@ def ticketing_index(request):
             else:
                 print("WE SEE FILTER....", file=sys.stderr)
                 current_user.u_filter_type = request.GET["filter"]
+
         except:
             pass
         current_user.save()
@@ -56,7 +57,7 @@ def ticketing_index(request):
 
         sort_by = current_user.u_sort_type
         print("Sorting by: {0}".format(sort_by), file=sys.stderr)
-
+        print("Filtering by: {}".format(filter_by), file=sys.stderr)
         if current_user.u_filter_type is None:
             queryset = all_ticket_helper(
                 current_user, current_user.u_permission_level, sort_by, None

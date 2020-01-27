@@ -212,19 +212,14 @@ class Rooms(models.Model):
 class LaptopCheckout(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    reason = models.TextField(verbose_name='Reason')
+    reason = models.CharField(verbose_name='Reason', max_length=255)
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
 
 class Printers(models.Model):
     problem = models.TextField(verbose_name='Issue With Printer')
-    printer = models.ForeignKey('PrinterList', on_delete=models.CASCADE)
+    printer = models.CharField(max_length=255)
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
 
-class PrinterList(models.Model):
-    printer = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.printer
 
 class NewStaff(models.Model):
     name = models.CharField(verbose_name='Name', max_length=255)
@@ -265,9 +260,9 @@ class AccountType(models.Model):
         return self.name
 
 class DefaultTicket(models.Model):
-    body = models.TextField(verbose_name='Ticket Summary')
+    ticket_body = models.TextField(verbose_name='Ticket Summary')
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
 
 
     def __str__(self):
-        return self.name
+        return self.body

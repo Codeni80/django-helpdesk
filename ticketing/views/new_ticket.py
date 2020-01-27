@@ -137,7 +137,7 @@ def new_ticket(request):
                     sec_form = DefaultTicketForm(request.POST)
                     if sec_form.is_valid():
                         defaultticket = DefaultTicket(
-                            body = sec_form.cleaned_data['body'],
+                            ticket_body = sec_form.cleaned_data['ticket_body'],
                             ticket = ticket
                         )
                         defaultticket.save()

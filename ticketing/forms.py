@@ -119,9 +119,9 @@ class EquipRoomForm(forms.ModelForm):
     customers = CustomUser.objects.all()
 
     room = forms.ModelChoiceField(queryset=queryset)
-    date = forms.DateField()
-    start_time = forms.TimeField()
-    end_time = forms.TimeField()
+    date = forms.TextInput()
+    start_time = forms.TextInput()
+    end_time = forms.TextInput()
 
     class Meta:
         model = EquipmentSetup
@@ -174,10 +174,8 @@ class EditLaptopCheckoutForm(forms.ModelForm):
 
     
 class PrintersForm(forms.ModelForm):
-    printer_query = PrinterList.objects.all()
-
     problem = forms.CharField(max_length=255)
-    printer = forms.ModelChoiceField(queryset=printer_query)
+    printer = forms.CharField(max_length=255)
 
     class Meta:
         model = Printers
@@ -189,11 +187,8 @@ class EditPrintersForm(forms.ModelForm):
         self.problem = kwargs.pop('problem')
         self.printer = kwargs.pop('printer')
         super(EditPrintersForm, self).__init__(*args, **kwargs)
-        self.default_printer = PrinterList.objects.get(printer=self.printer)
-        self.printer_query = PrinterList.objects.all()
         self.fields['problem'].initial = self.problem
-        self.fields['printer'].queryset = self.printer_query
-        self.fields['printer'].initial = self.default_printer
+        self.fields['printer'].initial = self.printer
 
     class Meta:
         model = Printers
@@ -295,22 +290,22 @@ class EditPasswordResetForm(forms.ModelForm):
 
 
 class DefaultTicketForm(forms.ModelForm):
-    body = forms.TextInput()
+    ticket_body = forms.TextInput()
 
     class Meta:
         model = DefaultTicket
-        fields = ('body',)
+        fields = ('ticket_body',)
 
 
 class EditDefaultTicketForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        self.body = kwargs.pop('body')
+        self.body = kwargs.pop('ticket_body')
         super(EditDefaultTicketForm, self).__init__(*args, **kwargs)
-        self.fields['body'].initial = self.body
+        self.fields['ticket_body'].initial = self.body
 
     class Meta:
         model = DefaultTicket
-        fields = ('body',)
+        fields = ('ticket_body',)
 
 
 class EditUserForm(forms.ModelForm):
@@ -379,7 +374,7 @@ class CommentForm(forms.ModelForm):
 class TicketTypeForm(forms.Form):
     category_query = Category.objects.all()
 
-    ticket_type = forms.ModelChoiceField(queryset=category_query,
+    t_type = forms.ModelChoiceField(queryset=category_query,
         empty_label=None,
         widget=forms.RadioSelect(attrs={'class': 'radioselect'})
     )
@@ -439,6 +434,11 @@ class FilterForm(forms.Form):
             self.fields['filter'] = forms.ChoiceField(
                 choices=U_CHOICES, widget=forms.Select(attrs={'class': 'filter'})
             )
+
+        self.fields["filter"].initial = (
+            "/?filter={}".format(self.filter_by),
+            "All {} Tickets".format(self.filter_by),
+        )
 
     class Meta:
         fields = 'filter'

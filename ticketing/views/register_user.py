@@ -12,7 +12,7 @@ def register(request):
     if request.user.force_change == True:
         return redirect("change_password")
     else:
-        if request.user.u_permission_level != "2":
+        if request.user.u_permission_level == '1':
             return redirect("/")
         else:
             if request.method == "POST":
