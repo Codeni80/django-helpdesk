@@ -55,7 +55,7 @@ python manage.py runserver
 
 Cody Wilson – [@Codeni80](https://twitter.com/codeni80) – codeni80@gmail.com
 
-[https://github.com/codeni80/django-helpdesk](https://github.com/Codenii/django-helpdesk)
+[https://github.com/codenii/django-helpdesk](https://github.com/Codenii/django-helpdesk)
 
 ## Contributing
 
