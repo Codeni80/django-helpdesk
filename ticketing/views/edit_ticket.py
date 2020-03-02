@@ -93,7 +93,9 @@ def ticket_detail(request, pk):
                 request.POST,
                 t_status = t_status,
                 t_subject = t_subject,
-                t_category = t_category
+                t_category = t_category,
+                updating_t_info = updating_t_info,
+                perm_level = request.user.u_permission_level
             )
             status = Status.objects.get(name=form.t_status)
             ticket.status = status
@@ -312,10 +314,13 @@ def ticket_detail(request, pk):
                 sec_form = EditDefaultTicketForm(
                     ticket_body = default_body
                 )
+            print(request.user.u_permission_level, file=sys.stderr)
             form = EditTicketForm(
                 t_status = t_status,
                 t_subject = t_subject,
-                t_category = t_category
+                t_category = t_category,
+                updating_t_info = updating_t_info,
+                perm_level = request.user.u_permission_level
             )
             c_form = CommentForm()
         if current_user.u_permission_level == '2':

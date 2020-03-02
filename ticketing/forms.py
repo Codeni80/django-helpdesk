@@ -97,21 +97,32 @@ class EditTicketForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.status_query = Status.objects.all()
         self.category_query = Category.objects.all()
+        self.tech_group = get_user_model()
+        self.assigned_query = self.tech_group.objects.filter(u_permission_level=2)
         self.t_status = kwargs.pop('t_status')
         self.t_subject = kwargs.pop('t_subject')
         self.t_category = kwargs.pop('t_category')
+        self.t_assigned = kwargs.pop('updating_t_info')
+        self.perm_level = kwargs.pop('perm_level')
         super(EditTicketForm, self).__init__(*args, **kwargs)
         self.fields['t_status'] = forms.ModelChoiceField(queryset=self.status_query, initial=self.t_status)
         self.fields['t_subject'] = forms.CharField(initial=self.t_subject)
         self.fields['t_category'] = forms.ModelChoiceField(queryset=self.category_query, initial=self.t_category)
-
+        self.fields['t_assigned'] = forms.ModelChoiceField(queryset=self.assigned_query, initial=self.t_assigned)
+        
+        self.fields["t_assigned"].widget.attrs["style"] = "width:400px;"
         self.fields["t_status"].widget.attrs["style"] = "width:400px;"
         self.fields["t_subject"].widget.attrs["style"] = "width:400px;"
         self.fields["t_category"].widget.attrs["style"] = "width:400px;"
 
+        if int(self.perm_level) == 1:
+            self.fields['t_assigned'].widget = forms.HiddenInput()
+            self.fields['t_assigned'].required = False
+        
+
     class Meta:
         model = Ticket
-        fields = ('t_status', 't_subject', 't_category')
+        fields = ('t_status', 't_subject', 't_category', 't_assigned')
 
 
 class EquipRoomForm(forms.ModelForm):
