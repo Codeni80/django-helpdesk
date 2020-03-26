@@ -61,6 +61,7 @@ def new_ticket(request):
                             date = sec_form.cleaned_data['date'],
                             start_time = sec_form.cleaned_data['start_time'],
                             end_time = sec_form.cleaned_data['end_time'],
+                            t_body = sec_form.cleaned_data['t_body'],
                             ticket = ticket
                         )
                         equipmentsetup.save()
@@ -74,6 +75,7 @@ def new_ticket(request):
                             reason = sec_form.cleaned_data['reason'],
                             start_time = sec_form.cleaned_data['start_time'],
                             end_time = sec_form.cleaned_data['end_time'],
+                            l_body = sec_form.cleaned_data['l_body'],
                             ticket = ticket
                         )
                         laptopcheckout.save()
@@ -86,6 +88,7 @@ def new_ticket(request):
                         printers = Printers(
                             problem = sec_form.cleaned_data['problem'],
                             printer = sec_form.cleaned_data['printer'],
+                            p_body = sec_form.cleaned_data['p_body'],
                             ticket = ticket
                         )
                         printers.save()
@@ -101,6 +104,7 @@ def new_ticket(request):
                             supervisor = sec_form.cleaned_data['supervisor'],
                             empid = sec_form.cleaned_data['empid'],
                             start_date = sec_form.cleaned_data['start_date'],
+                            ns_body = sec_form.cleaned_data['ns_body'],
                             ticket = ticket
                         )
                         newstaff.save()
@@ -115,6 +119,7 @@ def new_ticket(request):
                             staff_name = sec_form.cleaned_data['staff_name'],
                             location = sec_form.cleaned_data['location'],
                             date = sec_form.cleaned_data['date'],
+                            tr_body = sec_form.cleaned_data['tr_body'],
                             ticket = ticket
                         )
                         training.save()
@@ -127,6 +132,7 @@ def new_ticket(request):
                         passwordreset = PasswordReset(
                             name = sec_form.cleaned_data['name'],
                             account = sec_form.cleaned_data['account'],
+                            pr_body = sec_form.cleaned_data['pr_body'],
                             ticket = ticket
                         )
                         passwordreset.save()

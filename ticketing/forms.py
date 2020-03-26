@@ -133,10 +133,11 @@ class EquipRoomForm(forms.ModelForm):
     date = forms.TextInput()
     start_time = forms.TextInput()
     end_time = forms.TextInput()
+    t_body = forms.TextInput()
 
     class Meta:
         model = EquipmentSetup
-        fields = ('room', 'date', 'start_time', 'end_time')
+        fields = ('room', 'date', 'start_time', 'end_time', 't_body')
 
 
 class EditEquipRoomForm(forms.ModelForm):
@@ -145,6 +146,7 @@ class EditEquipRoomForm(forms.ModelForm):
         self.e_date = kwargs.pop('date')
         self.e_start_time = kwargs.pop('start_time')
         self.e_end_time = kwargs.pop('end_time')
+        self.e_t_body = kwargs.pop('t_body')
         super(EditEquipRoomForm, self).__init__(*args, **kwargs)
         self.default_rm = Rooms.objects.get(room=self.e_room)
         self.queryset = Rooms.objects.all()
@@ -153,20 +155,22 @@ class EditEquipRoomForm(forms.ModelForm):
         self.fields['date'].initial = self.e_date
         self.fields['start_time'].initial = self.e_start_time
         self.fields['end_time'].initial = self.e_end_time
+        self.fields['t_body'].initial = self.e_t_body
 
     class Meta:
         model = EquipmentSetup
-        fields = ('room', 'date', 'start_time', 'end_time')
+        fields = ('room', 'date', 'start_time', 'end_time', 't_body')
 
 
 class LaptopCheckoutForm(forms.ModelForm):
     reason = forms.CharField(max_length=255)
     start_time = forms.DateTimeField()
     end_time = forms.DateTimeField()
+    l_body = forms.TextInput()
 
     class Meta:
         model = LaptopCheckout
-        fields = ('reason', 'start_time', 'end_time')
+        fields = ('reason', 'start_time', 'end_time', 'l_body')
 
 
 class EditLaptopCheckoutForm(forms.ModelForm):
@@ -174,36 +178,41 @@ class EditLaptopCheckoutForm(forms.ModelForm):
         self.reason = kwargs.pop('reason')
         self.start_time = kwargs.pop('start_time')
         self.end_time = kwargs.pop('end_time')
+        self.l_body = kwargs.pop('l_body')
         super(EditLaptopCheckoutForm, self).__init__(*args, **kwargs)
         self.fields['reason'].initial = self.reason
         self.fields['start_time'].initial = self.start_time
         self.fields['end_time'].initial = self.end_time
+        self.fields['l_body'].initial = self.l_body
 
     class Meta:
         model = LaptopCheckout
-        fields = ('reason', 'start_time', 'end_time')
+        fields = ('reason', 'start_time', 'end_time', 'l_body')
 
     
 class PrintersForm(forms.ModelForm):
     problem = forms.CharField(max_length=255)
     printer = forms.CharField(max_length=255)
+    p_body = forms.TextInput()
 
     class Meta:
         model = Printers
-        fields = ('problem', 'printer')
+        fields = ('problem', 'printer', 'p_body')
 
 
 class EditPrintersForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.problem = kwargs.pop('problem')
         self.printer = kwargs.pop('printer')
+        self.p_body = kwargs.pop('p_body')
         super(EditPrintersForm, self).__init__(*args, **kwargs)
         self.fields['problem'].initial = self.problem
         self.fields['printer'].initial = self.printer
+        self.fields['p_body'].initial = self.p_body
 
     class Meta:
         model = Printers
-        fields = ('problem', 'printer')
+        fields = ('problem', 'printer', 'p_body')
 
 
 class NewStaffForm(forms.ModelForm):
@@ -212,10 +221,11 @@ class NewStaffForm(forms.ModelForm):
     supervisor = forms.CharField(max_length=255)
     empid = forms.CharField(max_length=255)
     start_date = forms.DateField()
+    ns_body = forms.TextInput()
 
     class Meta:
         model = NewStaff
-        fields = ('name', 'department', 'supervisor', 'empid', 'start_date')
+        fields = ('name', 'department', 'supervisor', 'empid', 'start_date', 'ns_body')
 
 
 class EditNewStaffForm(forms.ModelForm):
@@ -225,16 +235,18 @@ class EditNewStaffForm(forms.ModelForm):
         self.supervisor = kwargs.pop('supervisor')
         self.empid = kwargs.pop('empid')
         self.start_date = kwargs.pop('start_date')
+        self.ns_body = kwargs.pop('ns_body')
         super(EditNewStaffForm, self).__init__(*args, **kwargs)
         self.fields['name'].initial = self.name
         self.fields['department'].initial = self.department
         self.fields['supervisor'].initial = self.supervisor
         self.fields['empid'].initial = self.empid
         self.fields['start_date'].initial = self.start_date
+        self.fields['ns_body'].initial = self.ns_body
 
     class Meta:
         model = NewStaff
-        fields = ('name', 'department', 'supervisor', 'empid', 'start_date')
+        fields = ('name', 'department', 'supervisor', 'empid', 'start_date', 'ns_body')
 
 
 class TrainingForm(forms.ModelForm):
@@ -245,10 +257,11 @@ class TrainingForm(forms.ModelForm):
     staff_name = forms.CharField(max_length=255)
     location = forms.ModelChoiceField(queryset=location_query)
     date = forms.DateTimeField()
+    tr_body = forms.TextInput()
 
     class Meta:
         model = Training
-        fields = ('training_type', 'staff_name', 'location', 'date')
+        fields = ('training_type', 'staff_name', 'location', 'date', 'tr_body')
 
 
 class EditTrainingForm(forms.ModelForm):
@@ -257,6 +270,7 @@ class EditTrainingForm(forms.ModelForm):
         self.staff_name = kwargs.pop('staff_name')
         self.location = kwargs.pop('location')
         self.date = kwargs.pop('date')
+        self.tr_body = kwargs.pop('tr_body')
         super(EditTrainingForm, self).__init__(*args, **kwargs)
         self.default_type = TrainingType.objects.get(name=self.training_type)
         self.type_query = TrainingType.objects.all()
@@ -268,36 +282,40 @@ class EditTrainingForm(forms.ModelForm):
         self.fields['location'].queryset = self.loc_query
         self.fields['location'].initial = self.default_loc
         self.fields['date'].initial = self.date
+        self.fields['tr_body'].initial = self.tr_body
 
     class Meta:
         model = Training
-        fields = ('training_type', 'staff_name', 'location', 'date')
+        fields = ('training_type', 'staff_name', 'location', 'date', 'tr_body')
 
 
 class PasswordResetForm(forms.ModelForm):
     account_query = AccountType.objects.all()
     name = forms.CharField(max_length=255)
     account = forms.ModelChoiceField(queryset=account_query)
+    pr_body = forms.TextInput()
 
     class Meta:
         model = PasswordReset
-        fields = ('name', 'account')
+        fields = ('name', 'account', 'pr_body')
 
 
 class EditPasswordResetForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.name = kwargs.pop('name')
         self.account = kwargs.pop('account')
+        self.pr_body = kwargs.pop('pr_body')
         super(EditPasswordResetForm, self).__init__(*args, **kwargs)
         self.default_account = AccountType.objects.get(name=self.account)
         self.account_query = AccountType.objects.all()
         self.fields['name'].initial = self.name
         self.fields['account'].queryset = self.account_query
         self.fields['account'].initial = self.default_account
+        self.fields['pr_body'].initial = self.pr_body
 
     class Meta:
         model = PasswordReset
-        fields = ('name', 'account')
+        fields = ('name', 'account', 'pr_body')
 
 
 class DefaultTicketForm(forms.ModelForm):

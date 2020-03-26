@@ -41,6 +41,7 @@ def ticket_detail(request, pk):
             equip_date = equipsetup.date
             equip_start_time = equipsetup.start_time
             equip_end_time = equipsetup.end_time
+            equip_t_body = equipsetup.t_body
             equip_pk = equipsetup.pk
             flag = 0
         elif str(t_category_name) == 'Laptop Checkout':
@@ -48,12 +49,14 @@ def ticket_detail(request, pk):
             laptop_reason = laptopcheckout.reason
             laptop_start_time = laptopcheckout.start_time
             laptop_end_time = laptopcheckout.end_time
+            laptop_l_body = laptopcheckout.l_body
             laptop_pk = laptopcheckout.pk
             flag = 1
         elif str(t_category_name) == 'Printers':
             printers = Printers.objects.get(ticket=ticket)
             printer_problem = printers.problem
             printer_printer = printers.printer
+            printer_p_body = printers.p_body
             printer_pk = printers.pk
             flag = 2
         elif str(t_category_name) == 'New Staff':
@@ -63,6 +66,7 @@ def ticket_detail(request, pk):
             staff_supervisor = newstaff.supervisor
             staff_empid = newstaff.empid
             staff_start_date = newstaff.start_date
+            staff_ns_body = newstaff.ns_body
             staff_pk = newstaff.pk
             flag = 3
         elif str(t_category_name) == 'Training':
@@ -71,12 +75,14 @@ def ticket_detail(request, pk):
             training_staff_name = training.staff_name
             training_location = training.location
             training_date = training.date
+            training_tr_body = training.tr_body
             training_pk = training.pk
             flag = 4
         elif str(t_category_name) == 'Password Reset':
             password = PasswordReset.objects.get(ticket=ticket)
             password_name = password.name
             password_account = password.account
+            password_pr_body = password.pr_body
             password_pk = password.pk
             flag = 5
         else:
@@ -105,20 +111,23 @@ def ticket_detail(request, pk):
                     room = equip_room,
                     date = equip_date,
                     start_time = equip_start_time,
-                    end_time = equip_end_time
+                    end_time = equip_end_time,
+                    t_body = equip_t_body
                 )
             elif flag == 1:
                 sec_form = EditLaptopCheckoutForm(
                     request.POST,
                     reason = laptop_reason,
                     start_time = laptop_start_time,
-                    end_time = laptop_end_time
+                    end_time = laptop_end_time,
+                    l_body = laptop_l_body
                 )
             elif flag == 2:
                 sec_form = EditPrintersForm(
                     request.POST,
                     problem = printer_problem,
-                    printer = printer_printer
+                    printer = printer_printer,
+                    p_body = printer_p_body
                 )
             elif flag == 3:
                 sec_form = EditNewStaffForm(
@@ -128,6 +137,7 @@ def ticket_detail(request, pk):
                     supervisor = staff_supervisor,
                     empid = staff_empid,
                     start_date = staff_start_date,
+                    ns_body = staff_ns_body
                 )
             elif flag == 4:
                 sec_form = EditTrainingForm(
@@ -135,13 +145,15 @@ def ticket_detail(request, pk):
                     training_type = training_type,
                     staff_name = training_staff_name,
                     location = training_location,
-                    date = training_date
+                    date = training_date,
+                    tr_body = training_tr_body
                 )
             elif flag == 5:
                 sec_form = EditPasswordResetForm(
                     request.POST,
                     name = password_name,
-                    account = password_account
+                    account = password_account,
+                    pr_body = password_pr_body
                 )
             elif flag == 6:
                 print("FLAG SIX", file=sys.stderr)
@@ -187,6 +199,7 @@ def ticket_detail(request, pk):
                         equipmentroom.date = sec_form.cleaned_data['date']
                         equipmentroom.start_time = sec_form.cleaned_data['start_time']
                         equipmentroom.end_time = sec_form.cleaned_data['end_time']
+                        equipmentroom.t_body = sec_form.cleaned_data['t_body']
                         equipmentroom.ticket = ticket
                         equipmentroom.save()
                     else:
@@ -198,6 +211,7 @@ def ticket_detail(request, pk):
                         laptop.reason = sec_form.cleaned_data['reason']
                         laptop.start_time = sec_form.cleaned_data['start_time']
                         laptop.end_time = sec_form.cleaned_data['end_time']
+                        laptop.l_body = sec_form.cleaned_data['l_body']
                         laptop.ticket = ticket
                         laptop.save()
                     else:
@@ -207,6 +221,7 @@ def ticket_detail(request, pk):
                         printer = sec_form.save(commit=False)
                         printer.problem = sec_form.cleaned_data['problem']
                         printer.printer = sec_form.cleaned_data['printer']
+                        printer.p_body = sec_form.cleaned_data['p_body']
                         printer.pk = printer_pk
                         printer.ticket = ticket
                         printer.save()
@@ -221,6 +236,7 @@ def ticket_detail(request, pk):
                         staff.empid = sec_form.cleaned_data['empid']
                         staff.start_date = sec_form.cleaned_data['start_date']
                         staff.pk = staff_pk
+                        staff.ns_body = sec_form.cleaned_data['ns_body']
                         staff.ticket = ticket
                         staff.save()
                     else:
@@ -242,6 +258,7 @@ def ticket_detail(request, pk):
                         passreset = sec_form.save(commit=False)
                         passreset.name = sec_form.cleaned_data['name']
                         passreset.account = sec_form.cleaned_data['account']
+                        passreset.pr_body = sec_form.cleaned_data['pr_body']
                         passreset.pk = password_pk
                         passreset.ticket = ticket
                         passreset.save()
@@ -277,18 +294,21 @@ def ticket_detail(request, pk):
                     room = equip_room,
                     date = equip_date,
                     start_time = equip_start_time,
-                    end_time = equip_end_time
+                    end_time = equip_end_time,
+                    t_body = equip_t_body
                 )
             elif flag == 1:
                 sec_form = EditLaptopCheckoutForm(
                     reason = laptop_reason,
                     start_time = laptop_start_time,
-                    end_time = laptop_end_time
+                    end_time = laptop_end_time,
+                    l_body = laptop_l_body
                 )
             elif flag == 2:
                 sec_form = EditPrintersForm(
                     problem = printer_problem,
-                    printer = printer_printer
+                    printer = printer_printer,
+                    p_body = printer_p_body
                 )
             elif flag == 3:
                 sec_form = EditNewStaffForm(
@@ -296,19 +316,22 @@ def ticket_detail(request, pk):
                     department = staff_department,
                     supervisor = staff_supervisor,
                     empid = staff_empid,
-                    start_date = staff_start_date
+                    start_date = staff_start_date,
+                    ns_body = staff_ns_body
                 )
             elif flag == 4:
                 sec_form = EditTrainingForm(
                     training_type = training_type,
                     staff_name = training_staff_name,
                     location = training_location,
-                    date = training_date
+                    date = training_date,
+                    tr_body = training_tr_body
                 )
             elif flag == 5:
                 sec_form = EditPasswordResetForm(
                     name = password_name,
-                    account = password_account
+                    account = password_account,
+                    pr_body = password_pr_body 
                 )
             elif flag == 6:
                 sec_form = EditDefaultTicketForm(

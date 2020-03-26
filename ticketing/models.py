@@ -199,6 +199,10 @@ class EquipmentSetup(models.Model):
     date = models.TextField(verbose_name='Date of Event')
     start_time = models.TextField(verbose_name='Time of Event')
     end_time = models.TextField(verbose_name='Approx End of Event')
+    t_body = models.TextField(verbose_name='Additional Information (If Any)',
+        blank=True,
+        null=True,    
+    )
     ticket = models.ForeignKey("Ticket", on_delete=models.CASCADE)
 
 
@@ -214,10 +218,18 @@ class LaptopCheckout(models.Model):
     end_time = models.DateTimeField()
     reason = models.CharField(verbose_name='Reason', max_length=255)
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
+    l_body = models.TextField(verbose_name='Additional Information (If Any)',
+        blank=True,
+        null=True,    
+    )
 
 class Printers(models.Model):
     problem = models.TextField(verbose_name='Issue With Printer')
     printer = models.CharField(max_length=255)
+    p_body = models.TextField(verbose_name='Additional Information (If Any)',
+        blank=True,
+        null=True,    
+    )
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
 
 
@@ -227,6 +239,10 @@ class NewStaff(models.Model):
     supervisor = models.CharField(verbose_name='Supervisor', max_length=255)
     empid = models.CharField(verbose_name='Employee ID', max_length=255)
     start_date = models.DateTimeField()
+    ns_body = models.TextField(verbose_name='Additional Information (If Any)',
+        blank=True,
+        null=True,    
+    )
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
 
 class Training(models.Model):
@@ -234,6 +250,10 @@ class Training(models.Model):
     staff_name = models.CharField(verbose_name='Employee Name', max_length=255)
     location = models.ForeignKey('TrainingLoc', on_delete=models.CASCADE)
     date = models.DateTimeField(verbose_name='Proposed Date for Training')
+    tr_body = models.TextField(verbose_name='Additional Information (If Any)',
+        blank=True,
+        null=True,    
+    )
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
 
 class TrainingType(models.Model):
@@ -251,6 +271,10 @@ class TrainingLoc(models.Model):
 class PasswordReset(models.Model):
     name = models.CharField(max_length=255, verbose_name='Staff Name')
     account = models.ForeignKey('AccountType', on_delete=models.CASCADE)
+    pr_body = models.TextField(verbose_name='Additional Information (If Any)',
+        blank=True,
+        null=True,    
+    )
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
 
 class AccountType(models.Model):
