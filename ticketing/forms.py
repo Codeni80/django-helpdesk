@@ -107,13 +107,13 @@ class EditTicketForm(forms.ModelForm):
         super(EditTicketForm, self).__init__(*args, **kwargs)
         self.fields['t_status'] = forms.ModelChoiceField(queryset=self.status_query, initial=self.t_status)
         self.fields['t_subject'] = forms.CharField(initial=self.t_subject)
-        self.fields['t_category'] = forms.ModelChoiceField(queryset=self.category_query, initial=self.t_category)
+        # self.fields['t_category'] = forms.ModelChoiceField(queryset=self.category_query, initial=self.t_category)
         self.fields['t_assigned'] = forms.ModelChoiceField(queryset=self.assigned_query, initial=self.t_assigned)
         
         self.fields["t_assigned"].widget.attrs["style"] = "width:400px;"
         self.fields["t_status"].widget.attrs["style"] = "width:400px;"
         self.fields["t_subject"].widget.attrs["style"] = "width:400px;"
-        self.fields["t_category"].widget.attrs["style"] = "width:400px;"
+        # self.fields["t_category"].widget.attrs["style"] = "width:400px;"
 
         if int(self.perm_level) == 1:
             self.fields['t_assigned'].widget = forms.HiddenInput()
@@ -122,7 +122,7 @@ class EditTicketForm(forms.ModelForm):
 
     class Meta:
         model = Ticket
-        fields = ('t_status', 't_subject', 't_category', 't_assigned')
+        fields = ('t_status', 't_subject', 't_assigned')
 
 
 class EquipRoomForm(forms.ModelForm):

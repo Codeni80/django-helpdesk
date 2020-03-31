@@ -190,6 +190,7 @@ def ticket_detail(request, pk):
                     ticket.days_opened = str(ticket.days_opened).split('.', 1)
                     ticket.days_opened = ticket.days_opened[0]
                 
+                
                 ticket.save()
                 if flag == 0:
                     if sec_form.is_valid():
